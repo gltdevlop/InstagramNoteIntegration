@@ -1,0 +1,96 @@
+valorant.exe - Valorant
+csgo.exe - Counter-Strike: Global Offensive
+fortnite.exe - Fortnite
+minecraft.exe - Minecraft Bedrock Edition
+leagueclient.exe - League of Legends
+eldenring.exe - Elden Ring
+wow.exe - World of Warcraft
+apex.exe - Apex Legends
+witcher3.exe - The Witcher 3
+gtav.exe - Grand Theft Auto V
+dota2.exe - Dota 2
+pubg.exe - PUBG: Battlegrounds
+overwatch.exe - Overwatch
+callofduty.exe - Call of Duty: Modern Warfare II
+robloxplayerbeta.exe - Roblox
+starfield.exe - Starfield
+hollowknight.exe - Hollow Knight
+stardewvalley.exe - Stardew Valley
+cyberpunk2077.exe - Cyberpunk 2077
+diablo4.exe - Diablo IV
+genshinimpact.exe - Genshin Impact
+rocketleague.exe - Rocket League
+fifa24.exe - FIFA 24
+nba2k24.exe - NBA 2K24
+ark.exe - ARK: Survival Evolved
+sekiro.exe - Sekiro: Shadows Die Twice
+darkestdungeon.exe - Darkest Dungeon
+terraria.exe - Terraria
+bf2042.exe - Battlefield 2042
+fallguys.exe - Fall Guys
+subnautica.exe - Subnautica
+rust.exe - Rust
+hades.exe - Hades
+borderlands3.exe - Borderlands 3
+persona5.exe - Persona 5 Royal
+reddead2.exe - Red Dead Redemption 2
+doometernal.exe - DOOM Eternal
+assassinscreed.exe - Assassin's Creed Valhalla
+farcry6.exe - Far Cry 6
+tarkov.exe - Escape from Tarkov
+phasmophobia.exe - Phasmophobia
+rimworld.exe - RimWorld
+civ6.exe - Civilization VI
+ageofempires4.exe - Age of Empires IV
+totalwarwarhammer3.exe - Total War: Warhammer III
+forza.exe - Forza Horizon 5
+half-lifealyx.exe - Half-Life: Alyx
+rainbowsix.exe - Rainbow Six Siege
+gtavrp.exe - GTA V Roleplay (FiveM)
+factorio.exe - Factorio
+slime-rancher.exe - Slime Rancher 2
+dontstarve.exe - Don't Starve Together
+tunic.exe - Tunic
+kerbal.exe - Kerbal Space Program 2
+outlast.exe - Outlast
+amnesia.exe - Amnesia: The Bunker
+metroexodus.exe - Metro Exodus
+bioshock.exe - BioShock Infinite
+xcom2.exe - XCOM 2
+splatoon.exe - Splatoon 3
+pokemonsv.exe - Pokémon Scarlet/Violet
+zeldatearsofthekingdom.exe - The Legend of Zelda: Tears of the Kingdom
+smashbros.exe - Super Smash Bros. Ultimate
+animalcrossing.exe - Animal Crossing: New Horizons
+mariokart.exe - Mario Kart 8 Deluxe
+metroiddread.exe - Metroid Dread
+fireemblem.exe - Fire Emblem Engage
+bayonetta3.exe - Bayonetta 3
+kirby.exe - Kirby and the Forgotten Land
+splatoon3.exe - Splatoon 3
+dragonquestxi.exe - Dragon Quest XI S
+monsterhunter.exe - Monster Hunter Rise
+deadspace.exe - Dead Space Remake
+silent_hill2.exe - Silent Hill 2
+resident_evil4.exe - Resident Evil 4 Remake
+horizonfw.exe - Horizon Forbidden West
+spiderman.exe - Marvel's Spider-Man: Miles Morales
+godofwar.exe - God of War: Ragnarök
+thelastofus.exe - The Last of Us Part I
+uncharted.exe - Uncharted: Legacy of Thieves Collection
+ghostoftsushima.exe - Ghost of Tsushima
+bloodborne.exe - Bloodborne
+detroitbh.exe - Detroit: Become Human
+ratchet.exe - Ratchet & Clank: Rift Apart
+returnal.exe - Returnal
+daysgone.exe - Days Gone
+gran_turismo.exe - Gran Turismo 7
+psstars.exe - PlayStation Stars
+demonsouls.exe - Demon's Souls
+finalfantasy16.exe - Final Fantasy XVI
+ffxiv.exe - Final Fantasy XIV Online
+yakuza.exe - Like a Dragon: Infinite Wealth
+seaofthieves.exe - Sea of Thieves
+anomaly.exe - S.T.A.L.K.E.R.: Anomaly
+baldursgate3.exe - Baldur's Gate 3
+hogwartslegacy.exe - Hogwarts Legacy
