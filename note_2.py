@@ -1,4 +1,3 @@
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -86,7 +85,7 @@ try:
         print("Ouverture add note")
     except Exception as e:
         print("Ouverture add note raté :", e)
-# to here
+ #to here
 
 except Exception as e:
     print(f"Une erreur s'est produite : {e}")
