@@ -1,6 +1,5 @@
 from instagrapi import Client
 
-
 with open("creds.txt", "r", encoding="utf-8") as f:
     creds = f.readlines()
     username = creds[0].strip()

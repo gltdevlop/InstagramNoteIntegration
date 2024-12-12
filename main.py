@@ -28,6 +28,7 @@ def detect_running_game(game_dict):
             continue
     return None
 
+
 while True:
     game_dict = load_game_list('games.txt')
 
