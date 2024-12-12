@@ -1,12 +1,15 @@
 from instagrapi import Client
 
-ACCOUNT_USERNAME = "gbrt.ee"
-ACCOUNT_PASSWORD = "xxx"
+
+with open("creds.txt", "r", encoding="utf-8") as f:
+    creds = f.readlines()
+    username = creds[0].strip()
+    password = creds[1].strip()
 
 cl = Client()
-cl.login(ACCOUNT_USERNAME, ACCOUNT_PASSWORD)
+cl.login(username, password)
 
-user_id = cl.user_id_from_username(ACCOUNT_USERNAME)
+user_id = cl.user_id_from_username(username)
 medias = cl.user_medias(user_id, 20)
 
 def send_note(note, audience):

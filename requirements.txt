@@ -1,0 +1,2 @@
+psutil~=6.1.0
+instagrapi~=2.1.3
