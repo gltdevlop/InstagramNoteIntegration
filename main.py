@@ -48,7 +48,7 @@ def game_monitor():
                 if last_game != running_game:
                     start_time = time.perf_counter()
                     print(f"Game changed to: {running_game}")
-                    note_node.send_note(f"Joue à {running_game} depuis 0 sec", 0)
+                    note_node.send_note(f"Playing {running_game} since 0 sec", 0)
                     last_game = running_game
 
                 else:
@@ -59,13 +59,18 @@ def game_monitor():
 
                     if run_time_min >= 60:
                         run_time_hr = round(run_time_min / 60, 0)
-                        note_node.send_note(f"Joue à {running_game} depuis {run_time_hr}h", 0)
+                        note_node.send_note(f"Playing {running_game} since {run_time_hr}h", 0)
                     else:
-                        note_node.send_note(f"Joue à {running_game} depuis {run_time_min} min", 0)
+                        note_node.send_note(f"Playing {running_game} since {run_time_min} min", 0)
 
                     last_game = running_game
             else:
-                print("No game is currently running")
+                if last_game != "nogame":
+                    note_node.del_note()
+                    last_game = "nogame"
+                else:
+                    print("No game is currently running")
+
         else:
             print("Game list is empty or failed to load.")
 
