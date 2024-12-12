@@ -86,7 +86,7 @@ def main():
     global icon
 
     # Créer un menu contextuel
-    menu = Menu(MenuItem("Quitter IGNoteIntegration", quit_application))
+    menu = Menu(MenuItem("Quitter l'app", quit_application))
 
     # Créer une icône
     icon = Icon("IGNoteIntegration", create_image(), "IGNoteIntegration", menu)
