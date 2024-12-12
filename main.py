@@ -1,5 +1,6 @@
 import time
 import psutil
+import note_3 as note_node
 
 last_game = None  # On initialise `last_game` à None
 
@@ -34,11 +35,13 @@ while True:
         if running_game:
             if last_game != running_game:
                 print(f"Game changed to: {running_game}")
-                last_game = running_game 
+                note_node.send_note(f"Joue à {running_game}", 0)
+                last_game = running_game
             else:
                 print(f"Still playing: {running_game}")
         else:
             print("No predefined games are currently running.")
+            note_node.del_note()
     else:
         print("Game list is empty or failed to load.")
 

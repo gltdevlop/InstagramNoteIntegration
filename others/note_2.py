@@ -32,6 +32,7 @@ try:
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "username")))
 
     time.sleep(5)
+
     # Entrer les identifiants
     username_input = driver.find_element(By.NAME, "username")
     password_input = driver.find_element(By.NAME, "password")
@@ -44,48 +45,30 @@ try:
     time.sleep(5)
 
     password_input.send_keys(Keys.RETURN)
-    time.sleep(5)
+    time.sleep(2)
 
     # Naviguer vers la section des messages privés
-    time.sleep(5)
-    try:
-        driver.get("https://www.instagram.com/direct/inbox/")
-
-        # Attendre que la section des messages privés charge
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "section[role='region']"))
-        )
-        print("Connecté aux messages privés !")
-
-    except Exception as e:
-        print("Erreur lors de l'ouverture des messages privés :", e)
-
-    # Ajouter des interactions si nécessaire
+    time.sleep(10)
 
     try:
-        enable_notifications_button = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((
-                By.XPATH, "//button[text()='Plus tard'] | //button[text()='Not Now']"
-            ))
+        prlf= WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[text()='Profil']"))
         )
-        enable_notifications_button.click()
-        print("Fenêtre 'Activer les notifications' ignorée.")
+        prlf.click()
     except Exception as e:
-        print("Fenêtre 'Activer les notifications' non trouvée ou déjà ignorée :", e)
+        print("Bouton profil pas la :", e)
 
-    time.sleep(5)  # Attendre pour visualiser la page avant de quitter
- #pb from here
     try:
         add_note_btn = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((
-                By.LINK_TEXT, "Votre note"
+                By.XPATH, "//div[contains(@id, 'button') and starts-with(text(), 'Note')] "
             ))
         )
         add_note_btn.click()
         print("Ouverture add note")
+
     except Exception as e:
         print("Ouverture add note raté :", e)
- #to here
 
 except Exception as e:
     print(f"Une erreur s'est produite : {e}")
