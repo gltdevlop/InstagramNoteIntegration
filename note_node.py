@@ -1,5 +1,11 @@
+import os
+from tkinter import messagebox
+
 from instagrapi import Client
 
+if not os.path.exists("creds.txt"):
+    messagebox.showerror("Error", f"The credits file was not found. Please create a creds.txt file in the same folder with your instagram credits.")
+    exit()
 
 with open("creds.txt", "r", encoding="utf-8") as f:
     creds = f.readlines()
