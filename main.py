@@ -1,4 +1,6 @@
 import time
+from tkinter import messagebox
+
 import psutil
 from threading import Thread
 from pystray import Icon, Menu, MenuItem
@@ -16,7 +18,7 @@ def load_game_list(file_path):
     try:
         with open(file_path, 'r') as file:
             for line in file:
-                if " - " in line:  # Good formatting
+                if " - " in line:  # Good formatting check
                     exe, name = map(str.strip, line.split(" - ", 1))
                     games[exe.lower()] = name
     except FileNotFoundError:
@@ -39,7 +41,6 @@ def game_monitor():
     global last_game, start_time
 
     while True:
-
         game_dict = load_game_list('games.txt')
 
         if game_dict:
@@ -58,15 +59,18 @@ def game_monitor():
                     run_time_min = int(run_time / 60)
                     # print(f"Still playing {running_game}")
 
+                    # Check if time played > 60mn
                     if run_time_min >= 60:
                         run_time_hr = round(run_time_min / 60, 0)
                         note_node.send_note(f"Playing {running_game} since {run_time_hr}h", 0)
                     else:
+                        # If not showing in min
                         note_node.send_note(f"Playing {running_game} since {run_time_min} min", 0)
 
                     last_game = running_game
             else:
                 if last_game != "nogame":
+                    # Removing note if game's been closed
                     note_node.del_note()
                     last_game = "nogame"
                     # print("Game closed")
@@ -74,7 +78,11 @@ def game_monitor():
                     print("No game is currently running")
 
         else:
-            print("Game list is empty or failed to load.")
+            # If error
+            messagebox.showerror("Error",
+                                 f"Game list is empty or failed to load.")
+            # print("Game list is empty or failed to load.")
+            exit()
 
         time.sleep(120)
 
