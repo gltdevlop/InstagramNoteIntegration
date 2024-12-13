@@ -48,7 +48,7 @@ def game_monitor():
             if running_game:
                 if last_game != running_game:
                     start_time = time.perf_counter()
-                    print(f"Game changed to {running_game}")
+                    # print(f"Game changed to {running_game}")
                     note_node.send_note(f"Playing {running_game} since 0 sec", 0)
                     last_game = running_game
 
@@ -56,7 +56,7 @@ def game_monitor():
                     end_time = time.perf_counter()
                     run_time = end_time - start_time
                     run_time_min = int(run_time / 60)
-                    print(f"Still playing {running_game}")
+                    # print(f"Still playing {running_game}")
 
                     if run_time_min >= 60:
                         run_time_hr = round(run_time_min / 60, 0)
@@ -69,7 +69,7 @@ def game_monitor():
                 if last_game != "nogame":
                     note_node.del_note()
                     last_game = "nogame"
-                    print("Game closed")
+                    # print("Game closed")
                 else:
                     print("No game is currently running")
 
@@ -85,7 +85,7 @@ def create_image():
 # App exit
 def quit_application(icon, item):
     icon.stop()
-    print("Application terminated.")
+    # print("Application terminated.")
 
 # Main func to launch the app
 def main():
