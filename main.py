@@ -1,6 +1,6 @@
 import time
 from tkinter import messagebox
-
+import atexit
 import psutil
 from threading import Thread
 from pystray import Icon, Menu, MenuItem
@@ -11,6 +11,13 @@ import note_node
 last_game = None
 start_time = None
 icon = None
+
+
+def on_exit():
+    note_node.del_note()
+
+
+atexit.register(on_exit)
 
 # load game list func
 def load_game_list(file_path):
@@ -91,16 +98,23 @@ def create_image():
     return Image.open("icon.ico")
 
 # App exit
-def quit_application(icon, item):
+def quit_application(icon):
+    note_node.del_note()
     icon.stop()
     # print("Application terminated.")
+
+def actual_game():
+    return None
 
 # Main func to launch the app
 def main():
     global icon
 
     # Context menu
-    menu = Menu(MenuItem("Quitter l'app", quit_application))
+    menu = Menu(
+        MenuItem(f"Jeu actuel : (système d'affichage pas fonctionnel)",actual_game),  # New button
+        MenuItem("Quitter l'app", quit_application)
+    )
 
     # Open icon
     icon = Icon("IGNoteIntegration", create_image(), "IGNoteIntegration", menu)
