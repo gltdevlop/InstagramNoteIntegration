@@ -1,7 +1,4 @@
-import os.path
 import time
-from tkinter import messagebox
-
 import psutil
 from threading import Thread
 from pystray import Icon, Menu, MenuItem
@@ -12,10 +9,6 @@ import note_node
 last_game = None
 start_time = None
 icon = None
-
-if not os.path.exists("creds.txt"):
-    messagebox.showerror("Error", f"The credits file was not found. Please create a creds.txt file in the same folder with your instagram credits.")
-    exit()
 
 # Fonction pour charger la liste des jeux
 def load_game_list(file_path):
@@ -46,6 +39,7 @@ def game_monitor():
     global last_game, start_time
 
     while True:
+
         game_dict = load_game_list('games.txt')
 
         if game_dict:
@@ -82,7 +76,7 @@ def game_monitor():
         else:
             print("Game list is empty or failed to load.")
 
-        time.sleep(60)
+        time.sleep(120)
 
 # Fonction pour créer une icône pour la barre système
 def create_image():
