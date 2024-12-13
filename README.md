@@ -27,4 +27,4 @@ Create a **creds.txt** and put your username on first line then password on seco
 Start **main.py**
   
 ## You're all set !  
-You can create a shortcut of **main.py** in your `C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup` to start it when you boot your PC.
+You can create a shortcut of **main.py** or **IGNoteIntegration.exe** in your `C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup` to start it when you boot your PC.
