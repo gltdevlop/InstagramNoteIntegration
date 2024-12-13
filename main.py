@@ -5,36 +5,36 @@ from pystray import Icon, Menu, MenuItem
 from PIL import Image
 import note_node
 
-# Variables globales
+# Global variables
 last_game = None
 start_time = None
 icon = None
 
-# Fonction pour charger la liste des jeux
+# load game list func
 def load_game_list(file_path):
     games = {}
     try:
         with open(file_path, 'r') as file:
             for line in file:
-                if " - " in line:  # S'assurer que la ligne contient le bon format
+                if " - " in line:  # Good formatting
                     exe, name = map(str.strip, line.split(" - ", 1))
                     games[exe.lower()] = name
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' was not found.")
     return games
 
-# Fonction pour détecter un jeu en cours d'exécution
+# Detech a running game
 def detect_running_game(game_dict):
     for process in psutil.process_iter(attrs=['name']):
         try:
             process_name = process.info['name'].lower()
             if process_name in game_dict:
-                return game_dict[process_name]  # Retourner le nom du jeu correspondant
+                return game_dict[process_name]  # return the game name
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             continue
     return None
 
-# Fonction principale de surveillance
+# Main monitoring func
 def game_monitor():
     global last_game, start_time
 
@@ -78,31 +78,30 @@ def game_monitor():
 
         time.sleep(120)
 
-# Fonction pour créer une icône pour la barre système
+# Systray
 def create_image():
-    # Charger une icône depuis un fichier ico
     return Image.open("icon.ico")
 
-# Fonction pour quitter l'application
+# App exit
 def quit_application(icon, item):
     icon.stop()
     print("Application terminated.")
 
-# Fonction principale pour lancer l'application
+# Main func to launch the app
 def main():
     global icon
 
-    # Créer un menu contextuel
+    # Context menu
     menu = Menu(MenuItem("Quitter l'app", quit_application))
 
-    # Créer une icône
+    # Open icon
     icon = Icon("IGNoteIntegration", create_image(), "IGNoteIntegration", menu)
 
-    # Lancer la surveillance des jeux dans un thread séparé
+    # Start monitoring
     monitor_thread = Thread(target=game_monitor, daemon=True)
     monitor_thread.start()
 
-    # Démarrer l'icône de la barre système
+    # Start in the systray
     icon.run()
 
 if __name__ == "__main__":
