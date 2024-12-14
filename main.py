@@ -185,7 +185,6 @@ def main():
 
     # Context menu
     menu = Menu(
-        MenuItem(f"Jeu actuel : (système d'affichage pas fonctionnel)",actual_game),  # New button
         MenuItem("Quitter l'app", quit_application)
     )
 
