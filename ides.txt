@@ -1,0 +1,3 @@
+vscode.exe - Visual Studio Code
+eclipse.exe - Eclipse
+pycharm64.exe - PyCharm
