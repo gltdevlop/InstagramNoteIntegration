@@ -11,15 +11,28 @@ import note_node
 last_game = None
 start_time = None
 icon = None
+config = {}
 
 
 def on_exit():
     note_node.del_note()
 
-
 atexit.register(on_exit)
 
-# load game list func
+# Load configuration from file
+def load_config(file_path):
+    global config
+    try:
+        with open(file_path, 'r') as file:
+            for line in file:
+                if ':' in line:
+                    key, value = map(str.strip, line.split(':', 1))
+                    config[key.lower()] = value.lower() == 'true'
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' was not found.")
+
+# Load game list
+
 def load_game_list(file_path):
     games = {}
     dev_apps = {}
@@ -40,8 +53,7 @@ def load_game_list(file_path):
         print(f"Error: The file '{file_path}' was not found.")
     return games, dev_apps
 
-
-# Detech a running game
+# Detect a running game
 def detect_running_game(game_dict):
     for process in psutil.process_iter(attrs=['name']):
         try:
@@ -52,12 +64,13 @@ def detect_running_game(game_dict):
             continue
     return None
 
-
 # Main monitoring func
 def game_monitor():
     global last_game, start_time
 
     while True:
+        # Reload configuration and game list
+        load_config('config.txt')
         game_dict, dev_apps = load_game_list('list.txt')
 
         if game_dict or dev_apps:
@@ -66,31 +79,23 @@ def game_monitor():
             if running_game:
                 if last_game != running_game:
                     start_time = time.perf_counter()
-                    if running_game in dev_apps.values():
-                        activity = "Coding on"
-                    else:
-                        activity = "Playing"
-                    print(f"{activity} {running_game}")
-                    note_node.send_note(f"{activity} {running_game} since 0 sec", 0)
+                    activity = "Coding on" if running_game in dev_apps.values() else "Playing"
+                    note_content = f"{activity} {running_game}"
+
+                    if config.get('time_update', False):
+                        note_content += " since 0 min"
+
+                    note_node.send_note(note_content, 0)
                     last_game = running_game
 
-                else:
+                elif config.get('time_update', False):
                     end_time = time.perf_counter()
                     run_time = end_time - start_time
                     run_time_min = int(run_time / 60)
 
-                    if running_game in dev_apps.values():
-                        activity = "Coding on"
-                    else:
-                        activity = "Playing"
-
-                    if run_time_min >= 60:
-                        run_time_hr = round(run_time_min / 60, 0)
-                        note_node.send_note(f"{activity} {running_game} since {run_time_hr}h", 0)
-                    else:
+                    if run_time_min % 10 == 0:  # Update every 10 minutes
+                        activity = "Coding on" if running_game in dev_apps.values() else "Playing"
                         note_node.send_note(f"{activity} {running_game} since {run_time_min} min", 0)
-
-                    last_game = running_game
             else:
                 if last_game != "nogame":
                     note_node.del_note()
@@ -100,14 +105,12 @@ def game_monitor():
                     print("No game is currently running")
 
         else:
-            messagebox.showerror("Error",
-                                 f"Game list is empty or failed to load.")
+            messagebox.showerror("Error", "Game list is empty or failed to load.")
             print("Game list is empty or failed to load.")
             exit()
 
-        #15mn or insta not happy
-        time.sleep(900)
-
+        # Adjust sleep interval based on time_update setting
+        time.sleep(60 if not config.get('time_update', False) else 600)
 
 # Systray
 def create_image():
@@ -117,14 +120,13 @@ def create_image():
 def quit_application(icon):
     note_node.del_note()
     icon.stop()
-    # print("Application terminated.")
-
-def actual_game():
-    return None
 
 # Main func to launch the app
 def main():
     global icon
+
+    # Load initial configuration
+    load_config('config.txt')
 
     # Context menu
     menu = Menu(
@@ -137,7 +139,6 @@ def main():
     # Start monitoring games
     monitor_thread = Thread(target=game_monitor, daemon=True)
     monitor_thread.start()
-
 
     # Start in the systray
     icon.run()

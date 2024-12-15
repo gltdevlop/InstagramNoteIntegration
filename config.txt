@@ -1,3 +1,4 @@
 version : v1.2-release
 developper : gltdevlop
 app-release-name : IGNoteIntegration
+time_update: False
