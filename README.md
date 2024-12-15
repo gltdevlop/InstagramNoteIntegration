@@ -5,7 +5,7 @@
 
 ### Exe version :   
 Download the latest release .zip and extract it  
-Put your username and password in the creds file  
+Create a creds.txt in the .exe folder and put your username on 1st line and password on 2nd  
 Start the IGNoteIntegration.exe  
   
 **You're all set !**  
