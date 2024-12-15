@@ -9,8 +9,8 @@ Game list is empty or failed to load.: Game list is empty or failed to load.
 Quit the app: Quit the app
 
 [FR]
-Coding on: En train de coder sur
-Playing: En train de jouer à
+Coding on: Code sur
+Playing: Joue à à
 since: depuis
 min: min
 Game closed: Jeu fermé
