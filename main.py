@@ -105,7 +105,8 @@ def game_monitor():
             print("Game list is empty or failed to load.")
             exit()
 
-        time.sleep(120)
+        #15mn or insta not happy
+        time.sleep(900)
 
 
 # Systray
