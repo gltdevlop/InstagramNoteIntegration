@@ -32,7 +32,6 @@ def load_config(file_path):
         print(f"Error: The file '{file_path}' was not found.")
 
 # Load game list
-
 def load_game_list(file_path):
     games = {}
     dev_apps = {}
