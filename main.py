@@ -12,8 +12,31 @@ last_game = None
 start_time = None
 icon = None
 config = {}
+translations = {}
 
+# Load translations from file
+def load_translations(file_path):
+    global translations
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            current_lang = None
+            for line in file:
+                line = line.strip()
+                if line.startswith("[") and line.endswith("]"):
+                    current_lang = line[1:-1].lower()
+                    translations[current_lang] = {}
+                elif ":" in line and current_lang:
+                    key, value = map(str.strip, line.split(":", 1))
+                    translations[current_lang][key] = value
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' was not found.")
 
+# Get translated text
+def t(key):
+    lang = config.get('language', 'en').lower()
+    return translations.get(lang, {}).get(key, key)
+
+# On exit
 def on_exit():
     note_node.del_note()
 
@@ -27,7 +50,7 @@ def load_config(file_path):
             for line in file:
                 if ':' in line:
                     key, value = map(str.strip, line.split(':', 1))
-                    config[key.lower()] = value.lower() == 'true'
+                    config[key.lower()] = value.lower() if key.lower() == 'language' else value.lower() == 'true'
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' was not found.")
 
@@ -63,7 +86,7 @@ def detect_running_game(game_dict):
             continue
     return None
 
-# Main monitoring func
+# Main monitoring function
 def game_monitor():
     global last_game, start_time
 
@@ -78,11 +101,11 @@ def game_monitor():
             if running_game:
                 if last_game != running_game:
                     start_time = time.perf_counter()
-                    activity = "Coding on" if running_game in dev_apps.values() else "Playing"
+                    activity = t("Coding on") if running_game in dev_apps.values() else t("Playing")
                     note_content = f"{activity} {running_game}"
 
                     if config.get('time_update', False):
-                        note_content += " since 0 min"
+                        note_content += f" {t('since')} 0 {t('min')}"
 
                     note_node.send_note(note_content, 0)
                     last_game = running_game
@@ -93,19 +116,19 @@ def game_monitor():
                     run_time_min = int(run_time / 60)
 
                     if run_time_min % 10 == 0:  # Update every 10 minutes
-                        activity = "Coding on" if running_game in dev_apps.values() else "Playing"
-                        note_node.send_note(f"{activity} {running_game} since {run_time_min} min", 0)
+                        activity = t("Coding on") if running_game in dev_apps.values() else t("Playing")
+                        note_node.send_note(f"{activity} {running_game} {t('since')} {run_time_min} {t('min')}", 0)
             else:
                 if last_game != "nogame":
                     note_node.del_note()
                     last_game = "nogame"
-                    print("Game closed")
+                    print(t("Game closed"))
                 else:
-                    print("No game is currently running")
+                    print(t("No game is currently running"))
 
         else:
-            messagebox.showerror("Error", "Game list is empty or failed to load.")
-            print("Game list is empty or failed to load.")
+            messagebox.showerror("Error", t("Game list is empty or failed to load."))
+            print(t("Game list is empty or failed to load."))
             exit()
 
         # Adjust sleep interval based on time_update setting
@@ -120,16 +143,17 @@ def quit_application(icon):
     note_node.del_note()
     icon.stop()
 
-# Main func to launch the app
+# Main function to launch the app
 def main():
     global icon
 
-    # Load initial configuration
+    # Load initial configuration and translations
     load_config('config.txt')
+    load_translations('translations.txt')
 
     # Context menu
     menu = Menu(
-        MenuItem("Quitter l'app", quit_application)
+        MenuItem(t("Quit the app"), quit_application)
     )
 
     # Open icon
