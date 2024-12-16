@@ -10,7 +10,7 @@ Quit the app: Quit the app
 
 [FR]
 Coding on: Code sur
-Playing: Joue à à
+Playing: Joue à
 since: depuis
 min: min
 Game closed: Jeu fermé

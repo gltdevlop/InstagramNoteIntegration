@@ -92,8 +92,8 @@ def game_monitor():
 
     while True:
         # Reload configuration and game list
-        load_config('config.txt')
-        game_dict, dev_apps = load_game_list('list.txt')
+        load_config('_internal/config.txt')
+        game_dict, dev_apps = load_game_list('_internal/list.txt')
 
         if game_dict or dev_apps:
             running_game = detect_running_game({**game_dict, **dev_apps})
@@ -136,7 +136,7 @@ def game_monitor():
 
 # Systray
 def create_image():
-    return Image.open("icon.ico")
+    return Image.open("_internal/icon.ico")
 
 # App exit
 def quit_application(icon):
@@ -148,8 +148,8 @@ def main():
     global icon
 
     # Load initial configuration and translations
-    load_config('config.txt')
-    load_translations('translations.txt')
+    load_config('_internal/config.txt')
+    load_translations('_internal/translations.txt')
 
     # Context menu
     menu = Menu(
