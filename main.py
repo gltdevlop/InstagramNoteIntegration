@@ -91,9 +91,10 @@ def game_monitor():
     global last_game, start_time
 
     while True:
-        # Reload configuration and game list
-        load_config('config.txt')
-        game_dict, dev_apps = load_game_list('list.txt')
+        # Reload configuration
+        load_config('_internal/config.txt')
+
+        game_dict, dev_apps = load_game_list('_internal/list.txt')
 
         if game_dict or dev_apps:
             running_game = detect_running_game({**game_dict, **dev_apps})
@@ -134,9 +135,14 @@ def game_monitor():
         # Adjust sleep interval based on time_update setting
         time.sleep(60 if not config.get('time_update', False) else 600)
 
+# Refresh configurations and translations
+def refresh_all(icon, item):
+    load_config('_internal/config.txt')
+    load_translations('_internal/translations.txt')
+
 # Systray
 def create_image():
-    return Image.open("icon.ico")
+    return Image.open("_internal/icon.ico")
 
 # App exit
 def quit_application(icon):
@@ -148,11 +154,12 @@ def main():
     global icon
 
     # Load initial configuration and translations
-    load_config('config.txt')
-    load_translations('translations.txt')
+    load_config('_internal/config.txt')
+    load_translations('_internal/translations.txt')
 
     # Context menu
     menu = Menu(
+        MenuItem(t("Refresh all"), refresh_all),  # Add Refresh All button
         MenuItem(t("Quit the app"), quit_application)
     )
 
