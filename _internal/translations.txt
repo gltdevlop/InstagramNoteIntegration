@@ -7,6 +7,7 @@ Game closed: Game closed
 No game is currently running: No game is currently running
 Game list is empty or failed to load.: Game list is empty or failed to load.
 Quit the app: Quit the app
+Refresh all: Refresh all
 
 [FR]
 Coding on: Code sur
@@ -17,6 +18,7 @@ Game closed: Jeu fermé
 No game is currently running: Aucun jeu n'est en cours d'exécution
 Game list is empty or failed to load.: La liste des jeux est vide ou n'a pas pu être chargée.
 Quit the app: Quitter l'application
+Refresh all: Actualiser tout
 
 [ES]
 Coding on: Codificando en
