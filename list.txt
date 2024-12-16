@@ -1,6 +1,6 @@
 valorant.exe - Valorant
 csgo.exe - CS:GO
-fortnite.exe - Fortnite
+FortniteClient-Win64-Shipping.exe - Fortnite
 minecraft.exe - Minecraft Bedrock Edition
 leagueclient.exe - League of Legends
 eldenring.exe - Elden Ring
