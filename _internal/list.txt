@@ -97,6 +97,10 @@ baldursgate3.exe - Baldur's Gate 3
 hogwartslegacy.exe - Hogwarts Legacy
 horizonchase.exe - Horizon Chase
 helldivers2.exe - Helldivers
+GeometryDash.exe - Geometry Dash
+F1_22.exe - F1 2022
+F1_23.exe - F1 2023
+F1_24.exe - F1 2024
 ---
 code.exe - Visual Studio Code
 idea64.exe - IntelliJ IDEA
