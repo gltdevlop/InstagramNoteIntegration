@@ -29,6 +29,7 @@ Game closed: Juego cerrado
 No game is currently running: No hay ningún juego en ejecución
 Game list is empty or failed to load.: La lista de juegos está vacía o no se pudo cargar.
 Quit the app: Salir de la aplicación
+Refresh all: Refresh all
 
 [DE]
 Coding on: Arbeiten an
@@ -39,6 +40,7 @@ Game closed: Spiel beendet
 No game is currently running: Kein Spiel läuft gerade
 Game list is empty or failed to load.: Die Spieleliste ist leer oder konnte nicht geladen werden.
 Quit the app: Anwendung beenden
+Refresh all: Refresh all
 
 [NL]
 Coding on: Coderen op
@@ -49,3 +51,4 @@ Game closed: Spel gesloten
 No game is currently running: Er wordt geen spel uitgevoerd
 Game list is empty or failed to load.: De spellenlijst is leeg of kon niet worden geladen.
 Quit the app: De applicatie afsluiten
+Refresh all: Refresh all
