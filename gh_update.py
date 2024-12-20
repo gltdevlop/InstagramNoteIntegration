@@ -1,13 +1,16 @@
-from tkinter import messagebox
 import requests
 import zipfile
 import os
 import shutil
+import subprocess
+import sys
+import time
 
 # URL de l'API GitHub pour récupérer les informations de la dernière release
 GITHUB_API_URL = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
 CURRENT_VERSION_FILE = "_internal/config.txt"  # Fichier contenant la version actuelle
 KEEP_FILES = ["creds.txt"]  # Fichiers à conserver
+EXE_NAME = "IGNoteIntegration.exe"  # Nom de l'exécutable principal
 
 
 def get_current_version():
@@ -51,6 +54,24 @@ def download_and_extract_zip(url, target_folder):
     os.remove(zip_path)
 
 
+def create_update_script():
+    """Crée un script batch pour terminer la mise à jour après la fermeture."""
+    script_name = "update.bat"
+    with open(script_name, "w") as f:
+        f.write(f"@echo off\n")
+        f.write(f"echo Mise à jour en cours...\n")
+        f.write(f"timeout /t 2 > nul\n")  # Attendre 2 secondes
+        f.write(f"del {EXE_NAME}\n")  # Supprimer l'ancien .exe
+        f.write(f"rmdir /s /q _internal\n")  # Supprimer l'ancien internal
+        f.write(f"move update_temp\\{EXE_NAME} .\\{EXE_NAME}\n")  # Déplacer le nouveau .exe
+        f.write(f"move update_temp\\_internal .\n")  # Déplacer le internal
+        f.write(f"rmdir /s /q update_temp\n")  # Supprimer le dossier temporaire
+        f.write(f"start {EXE_NAME}\n")  # Relancer l'application
+        f.write(f"del %~f0\n")  # Supprimer le script batch lui-même
+
+    return script_name
+
+
 def update_application():
     """Met à jour l'application."""
     current_version = get_current_version()
@@ -58,7 +79,7 @@ def update_application():
 
     if current_version != latest_version:
         print(f"Nouvelle version disponible: {latest_version} (actuelle: {current_version})")
-        print("Téléchargement et mise à jour en cours...")
+        print("Téléchargement et préparation de la mise à jour...")
         download_and_extract_zip(download_url, "update_temp")
 
         # Sauvegarder les fichiers à conserver
@@ -66,21 +87,14 @@ def update_application():
             if os.path.exists(file):
                 shutil.copy(file, "update_temp")
 
-        # Remplacer les fichiers actuels
-        for item in os.listdir("update_temp"):
-            s = os.path.join("update_temp", item)
-            d = os.path.join(".", item)
-            if os.path.isdir(s):
-                if os.path.exists(d):
-                    shutil.rmtree(d)
-                shutil.move(s, d)
-            else:
-                shutil.move(s, d)
-
-        # Nettoyer le dossier temporaire
-        shutil.rmtree("update_temp")
-        messagebox.showinfo("Mise à jour", "Une mise à jour à été effectuée. Redémarrez l'application.")
+        # Créer un script batch pour effectuer la mise à jour
+        script_name = create_update_script()
+        print("Redémarrage de l'application pour finaliser la mise à jour...")
+        subprocess.Popen([script_name])  # Lancer le script batch
+        sys.exit()  # Fermer le programme principal
     else:
         print("Aucune mise à jour disponible. Vous utilisez déjà la dernière version.")
 
 
+if __name__ == "__main__":
+    update_application()
