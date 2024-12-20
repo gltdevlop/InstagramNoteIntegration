@@ -9,9 +9,7 @@ import time
 # URL de l'API GitHub pour récupérer les informations de la dernière release
 GITHUB_API_URL = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
 CURRENT_VERSION_FILE = "_internal/config.txt"  # Fichier contenant la version actuelle
-KEEP_FILES = ["creds.txt"]  # Fichiers à conserver
 EXE_NAME = "IGNoteIntegration.exe"  # Nom de l'exécutable principal
-
 
 def get_current_version():
     """Récupère la version actuelle à partir du fichier config.txt."""
@@ -62,9 +60,9 @@ def create_update_script():
         f.write(f"echo Mise à jour en cours...\n")
         f.write(f"timeout /t 2 > nul\n")  # Attendre 2 secondes
         f.write(f"del {EXE_NAME}\n")  # Supprimer l'ancien .exe
-        f.write(f"rmdir /s /q _internal\n")  # Supprimer l'ancien internal
         f.write(f"move update_temp\\{EXE_NAME} .\\{EXE_NAME}\n")  # Déplacer le nouveau .exe
-        f.write(f"move update_temp\\_internal .\n")  # Déplacer le internal
+        f.write(f"rmdir /s /q _internal\n")  # Supprimer le dossier internal
+        f.write(f"rename internal _internal\n")
         f.write(f"rmdir /s /q update_temp\n")  # Supprimer le dossier temporaire
         f.write(f"start {EXE_NAME}\n")  # Relancer l'application
         f.write(f"del %~f0\n")  # Supprimer le script batch lui-même
@@ -82,16 +80,14 @@ def update_application():
         print("Téléchargement et préparation de la mise à jour...")
         download_and_extract_zip(download_url, "update_temp")
 
-        # Sauvegarder les fichiers à conserver
-        for file in KEEP_FILES:
-            if os.path.exists(file):
-                shutil.copy(file, "update_temp")
+        shutil.copytree("update_temp/_internal", "internal")
 
         # Créer un script batch pour effectuer la mise à jour
         script_name = create_update_script()
         print("Redémarrage de l'application pour finaliser la mise à jour...")
         subprocess.Popen([script_name])  # Lancer le script batch
-        sys.exit()  # Fermer le programme principal
+        time.sleep(1)
+        os.system("taskkill /f /im IGNoteIntegration.exe") # Fermer le programme principal
     else:
         print("Aucune mise à jour disponible. Vous utilisez déjà la dernière version.")
 
