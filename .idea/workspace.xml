@@ -5,6 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1e1fcde6-354b-495a-961c-29eb962e9df1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_internal/config.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_internal/config.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gh_update.py" beforeDir="false" afterPath="$PROJECT_DIR$/gh_update.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,9 +44,10 @@
     "Python.note_node.executor": "Run",
     "Python.note_request.executor": "Run",
     "Python.other.executor": "Run",
+    "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "testing",
     "ignore.virus.scanning.warn.message": "true",
     "last_opened_file_path": "C:/Users/Gabriel/Documents/GitHub/InstagramNoteIntegration"
   }

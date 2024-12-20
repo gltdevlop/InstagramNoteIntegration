@@ -63,13 +63,21 @@ def create_update_script():
         f.write(f"del %~f0\n")
     return script_name
 
+def get_latest_release_notes():
+    url = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json().get("body", "Pas de notes disponibles.")
+
 
 def update_application():
     current_version = get_current_version()
     latest_version, download_url = get_latest_release()
+    notes = get_latest_release_notes()
+    up_notes = notes.replace("#", "").replace("*", "")
 
     if current_version != latest_version:
-        update = messagebox.askyesno("Update", f"Version {latest_version} avilable (actual: {current_version}). Update ?")
+        update = messagebox.askyesno("Update", f"Version {latest_version} avilable (actual: {current_version}). Changes : {up_notes} Update ?")
         if update:
             download_and_extract_zip(download_url, "update_temp")
             shutil.copytree("update_temp/_internal", "internal")
