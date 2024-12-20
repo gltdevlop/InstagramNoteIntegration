@@ -6,6 +6,7 @@ from threading import Thread
 from pystray import Icon, Menu, MenuItem
 from PIL import Image
 import note_node
+import gh_update
 
 # Global variables
 last_game = None
@@ -174,4 +175,5 @@ def main():
     icon.run()
 
 if __name__ == "__main__":
+    gh_update.update_application()
     main()
