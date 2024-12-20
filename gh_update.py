@@ -1,3 +1,5 @@
+from tkinter import messagebox
+
 import requests
 import zipfile
 import os
@@ -78,7 +80,7 @@ def update_application():
 
         # Nettoyer le dossier temporaire
         shutil.rmtree("update_temp")
-        print("Mise à jour terminée. Redémarrez l'application.")
+        messagebox.showinfo("Mise à jour", "Une mise à jour à été effectuée. Redémarrez l'application.")
     else:
         print("Aucune mise à jour disponible. Vous utilisez déjà la dernière version.")
 
