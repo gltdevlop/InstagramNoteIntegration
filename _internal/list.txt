@@ -9,6 +9,7 @@ wow.exe - World of Warcraft
 apex.exe - Apex Legends
 witcher3.exe - The Witcher 3
 gtav.exe - GTA V
+GTA5.exe - GTA V
 dota2.exe - Dota 2
 pubg.exe - PUBG: Battlegrounds
 overwatch.exe - Overwatch
