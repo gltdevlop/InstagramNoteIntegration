@@ -154,6 +154,9 @@ def change_settings():
     os.system("start _internal/config.txt")
 
 # Main function to launch the app
+def check_update():
+    gh_update.update_application_wanted()
+
 def main():
     global icon
 
@@ -164,6 +167,7 @@ def main():
     # Context menu
     menu = Menu(
         MenuItem(t("Settings"), change_settings()),
+        MenuItem(t("Check update"), check_update()),
         MenuItem(t("Refresh all"), refresh_all),  # Add Refresh All button
         MenuItem(t("Quit the app"), quit_application)
     )
