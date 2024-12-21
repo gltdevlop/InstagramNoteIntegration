@@ -7,8 +7,8 @@
     <list default="true" id="1e1fcde6-354b-495a-961c-29eb962e9df1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/creds_create.py" beforeDir="false" afterPath="$PROJECT_DIR$/creds_create.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_internal/translations.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_internal/translations.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +42,7 @@
     "Python.creds_create.executor": "Run",
     "Python.game_node.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.no_igco_andscan.executor": "Run",
     "Python.note_2.executor": "Run",
     "Python.note_3.executor": "Run",
     "Python.note_node.executor": "Run",

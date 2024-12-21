@@ -8,6 +8,7 @@ No game is currently running: No game is currently running
 Game list is empty or failed to load.: Game list is empty or failed to load.
 Quit the app: Quit the app
 Refresh all: Refresh all
+Settings: Settings
 
 [FR]
 Coding on: Code sur
@@ -19,6 +20,7 @@ No game is currently running: Aucun jeu n'est en cours d'exécution
 Game list is empty or failed to load.: La liste des jeux est vide ou n'a pas pu être chargée.
 Quit the app: Quitter l'application
 Refresh all: Actualiser tout
+Settings: Paramètres
 
 [ES]
 Coding on: Codificando en
@@ -30,6 +32,7 @@ No game is currently running: No hay ningún juego en ejecución
 Game list is empty or failed to load.: La lista de juegos está vacía o no se pudo cargar.
 Quit the app: Salir de la aplicación
 Refresh all: Refresh all
+Settings: Settings
 
 [DE]
 Coding on: Arbeiten an
@@ -41,6 +44,7 @@ No game is currently running: Kein Spiel läuft gerade
 Game list is empty or failed to load.: Die Spieleliste ist leer oder konnte nicht geladen werden.
 Quit the app: Anwendung beenden
 Refresh all: Refresh all
+Settings: Settings
 
 [NL]
 Coding on: Coderen op
@@ -52,3 +56,4 @@ No game is currently running: Er wordt geen spel uitgevoerd
 Game list is empty or failed to load.: De spellenlijst is leeg of kon niet worden geladen.
 Quit the app: De applicatie afsluiten
 Refresh all: Refresh all
+Settings: Settings
