@@ -8,7 +8,6 @@ from PIL import Image
 import note_node
 import gh_update
 
-# Global variables
 last_game = None
 start_time = None
 icon = None

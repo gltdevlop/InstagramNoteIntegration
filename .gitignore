@@ -1,3 +1,4 @@
 
-creds.txt
+_internal/creds.txt
 .idea/workspace.xml
+creds.txt
