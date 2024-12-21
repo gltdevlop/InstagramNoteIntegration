@@ -2,6 +2,8 @@ import os
 import subprocess
 import tkinter as tk
 from tkinter import messagebox
+from add_startup import add_startup
+
 
 def window():
     if not os.path.exists("_internal/creds.txt"):
@@ -24,6 +26,7 @@ def window():
                         f.write(f"start IGNoteIntegration.exe\n")
                         f.write(f"del %~f0\n")
 
+                add_startup()
                 subprocess.Popen("save_reboot.bat")
 
             except Exception as e:

@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1e1fcde6-354b-495a-961c-29eb962e9df1" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_internal/config.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_internal/config.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,9 +36,11 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.add_startup.executor": "Run",
     "Python.creds_create.executor": "Run",
     "Python.game_node.executor": "Run",
     "Python.main.executor": "Run",
+    "Python.no_igco_andscan.executor": "Run",
     "Python.note_2.executor": "Run",
     "Python.note_3.executor": "Run",
     "Python.note_node.executor": "Run",

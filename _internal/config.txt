@@ -1,4 +1,4 @@
-version: v1.7-r
+version: v1.8-r
 developper: gltdevlop
 app-release-name: IGNoteIntegration
 
@@ -7,3 +7,6 @@ time_update: False
 
 # Choose note language, FR / EN / ES / DE / NL
 language: EN
+
+# After you changed the settings, Don't forget to "Refresh All"
+# PLEASE DON'T TOUCH the version section. It'll break your app.

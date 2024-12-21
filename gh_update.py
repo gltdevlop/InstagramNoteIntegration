@@ -67,7 +67,7 @@ def get_latest_release_notes():
     url = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
     response = requests.get(url)
     response.raise_for_status()
-    return response.json().get("body", "Pas de notes disponibles.")
+    return response.json().get("body", "No available release notes.")
 
 
 def update_application():
@@ -77,7 +77,7 @@ def update_application():
     up_notes = notes.replace("#", "").replace("*", "")
 
     if current_version != latest_version:
-        update = messagebox.askyesno("Update", f"Version {latest_version} avilable (actual: {current_version}). Changes : {up_notes} Update ?")
+        update = messagebox.askyesno("Update", f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?")
         if update:
             download_and_extract_zip(download_url, "update_temp")
             shutil.copytree("update_temp/_internal", "internal")
@@ -85,6 +85,10 @@ def update_application():
             subprocess.Popen([script_name])
             time.sleep(1)
             os.system("taskkill /f /im IGNoteIntegration.exe")
+        else:
+            messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
+    else:
+        messagebox.showinfo("No update", "No update is currently available.")
 
 
 if __name__ == "__main__":
