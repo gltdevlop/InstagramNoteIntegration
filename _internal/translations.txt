@@ -9,6 +9,7 @@ Game list is empty or failed to load.: Game list is empty or failed to load.
 Quit the app: Quit the app
 Refresh all: Refresh all
 Settings: Settings
+Time Update: Time Update
 
 [FR]
 Coding on: Code sur
@@ -21,39 +22,5 @@ Game list is empty or failed to load.: La liste des jeux est vide ou n'a pas pu 
 Quit the app: Quitter l'application
 Refresh all: Actualiser tout
 Settings: Paramètres
+Time Update: Affichage du temps
 
-[ES]
-Coding on: Codificando en
-Playing: Jugando a
-since: desde hace
-min: min
-Game closed: Juego cerrado
-No game is currently running: No hay ningún juego en ejecución
-Game list is empty or failed to load.: La lista de juegos está vacía o no se pudo cargar.
-Quit the app: Salir de la aplicación
-Refresh all: Refresh all
-Settings: Settings
-
-[DE]
-Coding on: Arbeiten an
-Playing: Spielen von
-since: seit
-min: Min
-Game closed: Spiel beendet
-No game is currently running: Kein Spiel läuft gerade
-Game list is empty or failed to load.: Die Spieleliste ist leer oder konnte nicht geladen werden.
-Quit the app: Anwendung beenden
-Refresh all: Refresh all
-Settings: Settings
-
-[NL]
-Coding on: Coderen op
-Playing: Spelen van
-since: sinds
-min: min
-Game closed: Spel gesloten
-No game is currently running: Er wordt geen spel uitgevoerd
-Game list is empty or failed to load.: De spellenlijst is leeg of kon niet worden geladen.
-Quit the app: De applicatie afsluiten
-Refresh all: Refresh all
-Settings: Settings

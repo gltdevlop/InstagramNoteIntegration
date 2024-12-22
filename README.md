@@ -13,6 +13,10 @@ Start the IGNoteIntegration.exe
   
 **You're all set !**  
   
+To change the language of the note sent or add a time update on your note every 10 mins, right-click on the App on the systray and click "Settings". Restart the app after.  
+  
+**BE CAREFUL** !! Enabling the time update can upset instagram (like really).    
+  
 If you want to add games or IDEs, navigate to _internal/list.txt and add your games/ide as :
 ```
 game_executable.exe - Game Name
@@ -21,12 +25,7 @@ ide_executable.exe - Ide Name
 ```
 (if you add an IDE, put it after the "---" located down in the file)
   
-To change the language of the note sent or add a time update on your note every 10 mins, right-click on the App on the systray and click "Settings" :
-```
-time_update: True/False
-language: FR/EN/DE/NL/ES
-```
-**BE CAREFUL** !! Enabling the time update can upset instagram (like really).
+
   
 #### Python Version  
  

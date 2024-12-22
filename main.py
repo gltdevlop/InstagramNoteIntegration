@@ -4,6 +4,10 @@ from tkinter import messagebox
 import atexit
 import psutil
 from threading import Thread
+
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QComboBox, QPushButton
+from PyQt5.QtCore import Qt
 from pystray import Icon, Menu, MenuItem
 from PIL import Image
 import note_node
@@ -150,8 +154,66 @@ def quit_application(icon):
     note_node.del_note()
     icon.stop()
 
-def change_settings():
-    os.system("start _internal/config.txt")
+def save_config(file_path):
+    try:
+        with open(file_path, 'w') as file:
+            for key, value in config.items():
+                file.write(f"{key}: {value}\n")
+    except Exception as e:
+        print(f"Error saving config: {e}")
+
+# PyQt5 Settings Window
+class SettingsWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle(t("Settings - IGNoteIntegration"))
+        self.setFixedSize(330, 150)
+        self.init_ui()
+
+    def init_ui(self):
+        layout = QVBoxLayout()
+
+        # Time Update Checkbox
+        self.time_update_checkbox = QCheckBox(t("Time Update"))
+        self.setWindowIcon(QIcon("_internal/icon.ico"))
+        self.time_update_checkbox.setChecked(config.get('time_update', False))
+        layout.addWidget(self.time_update_checkbox)
+
+        # Language Selector
+        language_layout = QHBoxLayout()
+        language_label = QLabel(t("Language"))
+        self.language_selector = QComboBox()
+        self.language_selector.addItems(["EN", "FR"])
+        self.language_selector.setCurrentText(config.get('language', 'EN').upper())
+        language_layout.addWidget(language_label)
+        language_layout.addWidget(self.language_selector)
+        layout.addLayout(language_layout)
+
+        # Save Button
+        save_button = QPushButton(t("Save"))
+        save_button.clicked.connect(self.save_settings)
+        layout.addWidget(save_button, alignment=Qt.AlignRight)
+
+        self.setLayout(layout)
+
+    def save_settings(self):
+        config['time_update'] = self.time_update_checkbox.isChecked()
+        config['language'] = self.language_selector.currentText().upper()
+        save_config('_internal/config.txt')
+        load_config('_internal/config.txt')
+        messagebox.showinfo(t("Settings"), t("Settings saved successfully!"))
+        self.close()
+
+def open_settings_window():
+    def run_window():
+        app = QApplication([])
+        settings_window = SettingsWindow()
+        settings_window.show()
+        app.exec_()
+
+    settings_thread = Thread(target=run_window, daemon=True)
+    settings_thread.start()
+
 
 def main():
     global icon
@@ -162,7 +224,7 @@ def main():
 
     # Context menu
     menu = Menu(
-        MenuItem(t("Settings"), change_settings),
+        MenuItem(t("Settings"), open_settings_window),
         MenuItem(t("Refresh all"), refresh_all),  # Add Refresh All button
         MenuItem(t("Quit the app"), quit_application)
     )
