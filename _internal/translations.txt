@@ -10,6 +10,7 @@ Quit the app: Quit the app
 Refresh all: Refresh all
 Settings: Settings
 Time Update: Time Update
+Language : Language
 
 [FR]
 Coding on: Code sur
@@ -23,4 +24,5 @@ Quit the app: Quitter l'application
 Refresh all: Actualiser tout
 Settings: Paramètres
 Time Update: Affichage du temps
+Language : Langue de l'application
 

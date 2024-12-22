@@ -5,3 +5,4 @@ pillow~=11.0.0
 future~=1.0.0
 requests~=2.32.3
 winshell~=0.6
+PyQt5~=5.15.11

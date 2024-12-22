@@ -4,7 +4,6 @@ from tkinter import messagebox
 import atexit
 import psutil
 from threading import Thread
-
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QCheckBox, QComboBox, QPushButton
 from PyQt5.QtCore import Qt
@@ -19,7 +18,6 @@ icon = None
 config = {}
 translations = {}
 
-# Load translations from file
 def load_translations(file_path):
     global translations
     try:
@@ -36,7 +34,6 @@ def load_translations(file_path):
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' was not found.")
 
-# Get translated text
 def t(key):
     lang = config.get('language', 'en').lower()
     return translations.get(lang, {}).get(key, key)
@@ -47,7 +44,6 @@ def on_exit():
 
 atexit.register(on_exit)
 
-# Load configuration from file
 def load_config(file_path):
     global config
     try:
@@ -59,7 +55,6 @@ def load_config(file_path):
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' was not found.")
 
-# Load game list
 def load_game_list(file_path):
     games = {}
     dev_apps = {}
@@ -70,7 +65,7 @@ def load_game_list(file_path):
                 if line.strip() == "---":
                     is_dev_section = True
                     continue
-                if " - " in line:  # Good formatting check
+                if " - " in line:
                     exe, name = map(str.strip, line.split(" - ", 1))
                     if is_dev_section:
                         dev_apps[exe.lower()] = name
@@ -80,23 +75,20 @@ def load_game_list(file_path):
         print(f"Error: The file '{file_path}' was not found.")
     return games, dev_apps
 
-# Detect a running game
 def detect_running_game(game_dict):
     for process in psutil.process_iter(attrs=['name']):
         try:
             process_name = process.info['name'].lower()
             if process_name in game_dict:
-                return game_dict[process_name]  # return the game name
+                return game_dict[process_name]
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             continue
     return None
 
-# Main monitoring function
 def game_monitor():
     global last_game, start_time
 
     while True:
-        # Reload configuration
         load_config('_internal/config.txt')
 
         game_dict, dev_apps = load_game_list('_internal/list.txt')
@@ -121,7 +113,7 @@ def game_monitor():
                     run_time = end_time - start_time
                     run_time_min = int(run_time / 60)
 
-                    if run_time_min % 10 == 0:  # Update every 10 minutes
+                    if run_time_min % 10 == 0:
                         activity = t("Coding on") if running_game in dev_apps.values() else t("Playing")
                         note_node.send_note(f"{activity} {running_game} {t('since')} {run_time_min} {t('min')}", 0)
             else:
@@ -137,19 +129,15 @@ def game_monitor():
             print(t("Game list is empty or failed to load."))
             exit()
 
-        # Adjust sleep interval based on time_update setting
         time.sleep(60 if not config.get('time_update', False) else 600)
 
-# Refresh configurations and translations
 def refresh_all(icon, item):
     load_config('_internal/config.txt')
     load_translations('_internal/translations.txt')
 
-# Systray
 def create_image():
     return Image.open("_internal/icon.ico")
 
-# App exit
 def quit_application(icon):
     note_node.del_note()
     icon.stop()
@@ -162,7 +150,6 @@ def save_config(file_path):
     except Exception as e:
         print(f"Error saving config: {e}")
 
-# PyQt5 Settings Window
 class SettingsWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -173,13 +160,11 @@ class SettingsWindow(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
 
-        # Time Update Checkbox
         self.time_update_checkbox = QCheckBox(t("Time Update"))
         self.setWindowIcon(QIcon("_internal/icon.ico"))
         self.time_update_checkbox.setChecked(config.get('time_update', False))
         layout.addWidget(self.time_update_checkbox)
 
-        # Language Selector
         language_layout = QHBoxLayout()
         language_label = QLabel(t("Language"))
         self.language_selector = QComboBox()
@@ -189,7 +174,6 @@ class SettingsWindow(QWidget):
         language_layout.addWidget(self.language_selector)
         layout.addLayout(language_layout)
 
-        # Save Button
         save_button = QPushButton(t("Save"))
         save_button.clicked.connect(self.save_settings)
         layout.addWidget(save_button, alignment=Qt.AlignRight)
@@ -218,25 +202,20 @@ def open_settings_window():
 def main():
     global icon
 
-    # Load initial configuration and translations
     load_config('_internal/config.txt')
     load_translations('_internal/translations.txt')
 
-    # Context menu
     menu = Menu(
         MenuItem(t("Settings"), open_settings_window),
-        MenuItem(t("Refresh all"), refresh_all),  # Add Refresh All button
+        MenuItem(t("Refresh all"), refresh_all),
         MenuItem(t("Quit the app"), quit_application)
     )
 
-    # Open icon
     icon = Icon("IGNoteIntegration", create_image(), "IGNoteIntegration", menu)
 
-    # Start monitoring games
     monitor_thread = Thread(target=game_monitor, daemon=True)
     monitor_thread.start()
 
-    # Start in the systray
     icon.run()
 
 if __name__ == "__main__":
