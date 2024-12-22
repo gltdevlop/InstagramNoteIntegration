@@ -81,7 +81,26 @@ def update_application():
     up_notes = notes.replace("#", "").replace("*", "")
 
     if current_version != latest_version:
-        update = messagebox.askyesno("Update", f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?")
+        update = messagebox.askyesno("Update - IGNoteIntegration", f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?")
+        if update:
+            download_and_extract_zip(download_url, "update_temp")
+            shutil.copytree("update_temp/_internal", "internal")
+            script_name = create_update_script()
+            subprocess.Popen([script_name])
+            time.sleep(1)
+            os.system("taskkill /f /im IGNoteIntegration.exe")
+        else:
+            messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
+
+
+def update_application_wanted():
+    current_version = get_current_version()
+    latest_version, download_url = get_latest_release()
+    notes = get_latest_release_notes()
+    up_notes = notes.replace("#", "").replace("*", "")
+
+    if current_version != latest_version:
+        update = messagebox.askyesno("Update - IGNoteIntegration", f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?")
         if update:
             download_and_extract_zip(download_url, "update_temp")
             shutil.copytree("update_temp/_internal", "internal")

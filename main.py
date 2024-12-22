@@ -11,12 +11,15 @@ from pystray import Icon, Menu, MenuItem
 from PIL import Image
 import note_node
 import gh_update
+from session_logger import log_game_session
+from load_list import load_game_data
 
 last_game = None
 start_time = None
 icon = None
 config = {}
 translations = {}
+shutdown_flag = False
 
 def load_translations(file_path):
     global translations
@@ -40,9 +43,12 @@ def t(key):
 
 # On exit
 def on_exit():
+    global shutdown_flag
+    shutdown_flag = True
     note_node.del_note()
 
 atexit.register(on_exit)
+
 
 def load_config(file_path):
     global config
@@ -54,26 +60,6 @@ def load_config(file_path):
                     config[key.lower()] = value.lower() if key.lower() == 'language' else value.lower() == 'true'
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' was not found.")
-
-def load_game_list(file_path):
-    games = {}
-    dev_apps = {}
-    try:
-        with open(file_path, 'r') as file:
-            is_dev_section = False
-            for line in file:
-                if line.strip() == "---":
-                    is_dev_section = True
-                    continue
-                if " - " in line:
-                    exe, name = map(str.strip, line.split(" - ", 1))
-                    if is_dev_section:
-                        dev_apps[exe.lower()] = name
-                    else:
-                        games[exe.lower()] = name
-    except FileNotFoundError:
-        print(f"Error: The file '{file_path}' was not found.")
-    return games, dev_apps
 
 def detect_running_game(game_dict):
     for process in psutil.process_iter(attrs=['name']):
@@ -88,18 +74,29 @@ def detect_running_game(game_dict):
 def game_monitor():
     global last_game, start_time
 
-    while True:
+    while not shutdown_flag:
         load_config('_internal/config.txt')
 
-        game_dict, dev_apps = load_game_list('_internal/list.txt')
+        game_dict, dev_apps = load_game_data()  # Charge les données des jeux et des IDE
 
         if game_dict or dev_apps:
+            # Fusionner les jeux et les applications de développement pour la détection
             running_game = detect_running_game({**game_dict, **dev_apps})
 
             if running_game:
+                # Détecter si c'est un jeu ou un IDE
+                if running_game in dev_apps.values():
+                    activity = t("Coding on")  # Message pour les IDE
+                else:
+                    activity = t("Playing")  # Message pour les jeux
+
+                # Si le jeu/IDE a changé
                 if last_game != running_game:
+                    if last_game and start_time:
+                        end_time = time.perf_counter()
+                        log_game_session(last_game, note_node.username, start_time, end_time)
+
                     start_time = time.perf_counter()
-                    activity = t("Coding on") if running_game in dev_apps.values() else t("Playing")
                     note_content = f"{activity} {running_game}"
 
                     if config.get('time_update', False):
@@ -108,28 +105,37 @@ def game_monitor():
                     note_node.send_note(note_content, 0)
                     last_game = running_game
 
+                # Mise à jour du temps de jeu toutes les 10 minutes si activé
                 elif config.get('time_update', False):
                     end_time = time.perf_counter()
                     run_time = end_time - start_time
                     run_time_min = int(run_time / 60)
 
                     if run_time_min % 10 == 0:
-                        activity = t("Coding on") if running_game in dev_apps.values() else t("Playing")
                         note_node.send_note(f"{activity} {running_game} {t('since')} {run_time_min} {t('min')}", 0)
+
             else:
+                if last_game and start_time:
+                    end_time = time.perf_counter()
+                    log_game_session(last_game, note_node.username, start_time, end_time)
+
                 if last_game != "nogame":
                     note_node.del_note()
-                    last_game = "nogame"
+                    last_game = None
                     print(t("Game closed"))
                 else:
                     print(t("No game is currently running"))
 
         else:
-            messagebox.showerror("Error", t("Game list is empty or failed to load."))
             print(t("Game list is empty or failed to load."))
-            exit()
 
         time.sleep(60 if not config.get('time_update', False) else 600)
+
+    if last_game and start_time:
+        end_time = time.perf_counter()
+        log_game_session(last_game, note_node.username, start_time, end_time)
+    note_node.del_note()
+
 
 def refresh_all(icon, item):
     load_config('_internal/config.txt')
@@ -200,11 +206,10 @@ def open_settings_window():
 
 def check_up():
     def check():
-        gh_update.update_application()
+        gh_update.update_application_wanted()
 
     checkup_thread = Thread(target=check, daemon=True)
     checkup_thread.start()
-
 
 def main():
     global icon
