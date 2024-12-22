@@ -1,0 +1,3 @@
+version: v1.9.5-r
+developper: gltdevlop
+app-release-name: IGNoteIntegration
