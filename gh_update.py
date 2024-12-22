@@ -7,7 +7,7 @@ import subprocess
 import time
 
 GITHUB_API_URL = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
-CURRENT_VERSION_FILE = "_internal/config.txt"
+CURRENT_VERSION_FILE = "_internal/infos.txt"
 EXE_NAME = "IGNoteIntegration.exe"
 
 def get_current_version():
@@ -58,6 +58,10 @@ def create_update_script():
         f.write(f"move update_temp\\{EXE_NAME} .\\{EXE_NAME}\n")
         f.write(f"rmdir /s /q _internal\n")
         f.write(f"rename internal _internal\n")
+        f.write(f"copy _internal\\config.txt config.txt\n")
+        f.write(f"del _internal\\config.txt\n")
+        f.write(f"copy config.txt _internal\\config.txt\n")
+        f.write(f"del config.txt\n")
         f.write(f"rmdir /s /q update_temp\n")
         f.write(f"start {EXE_NAME}\n")
         f.write(f"del %~f0\n")

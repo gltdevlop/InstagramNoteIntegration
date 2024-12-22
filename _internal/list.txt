@@ -2,7 +2,7 @@ valorant.exe - Valorant
 csgo.exe - CS:GO
 FortniteClient-Win64-Shipping.exe - Fortnite
 javaw.exe - Minecraft Java Edition
-minecraft.exe - Minecraft Bedrock Edition
+Minecraft.Windows.exe - Minecraft Bedrock Edition
 leagueclient.exe - League of Legends
 eldenring.exe - Elden Ring
 wow.exe - World of Warcraft
@@ -90,7 +90,7 @@ gran_turismo.exe - Gran Turismo 7
 psstars.exe - PlayStation Stars
 demonsouls.exe - Demon's Souls
 finalfantasy16.exe - Final Fantasy XVI
-ffxiv.exe - Final Fantasy XIV Online
+ffxiv.exe - Final Fantasy XIV
 yakuza.exe - Like a Dragon: Infinite Wealth
 seaofthieves.exe - Sea of Thieves
 anomaly.exe - S.T.A.L.K.E.R.: Anomaly
