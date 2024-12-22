@@ -6,7 +6,7 @@
 
 **Some antiviruses like windows defender can consider this as a false positive. You can check the code if you don't 
 trust, but it's not a virus. Authorize the folder you'll put your app in (because when it updates it re-downloads the exe) in 
-your antivirus exclusion or disable it in order to work if detected as false positive.**  
+your antivirus exclusion or disable your antivirus (not recommanded) in order to work if detected as false positive.**  
   
 Download the latest release .zip and extract it  
 Start the IGNoteIntegration.exe  
