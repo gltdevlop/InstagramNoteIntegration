@@ -10,7 +10,7 @@ Quit the app: Quit the app
 Refresh all: Refresh all
 Settings: Settings
 Time Update: Time Update
-Language : Language
+Language : App Language
 
 [FR]
 Coding on: Code sur

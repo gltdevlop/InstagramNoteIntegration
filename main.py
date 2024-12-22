@@ -198,9 +198,17 @@ def open_settings_window():
     settings_thread = Thread(target=run_window, daemon=True)
     settings_thread.start()
 
+def check_up():
+    def check():
+        gh_update.update_application()
+
+    checkup_thread = Thread(target=check, daemon=True)
+    checkup_thread.start()
+
 
 def main():
     global icon
+    current_version = gh_update.get_current_version()
 
     load_config('_internal/config.txt')
     load_translations('_internal/translations.txt')
@@ -208,6 +216,7 @@ def main():
     menu = Menu(
         MenuItem(t("Settings"), open_settings_window),
         MenuItem(t("Refresh all"), refresh_all),
+        MenuItem(f"Version : {current_version} (click to check update)", check_up),
         MenuItem(t("Quit the app"), quit_application)
     )
 
