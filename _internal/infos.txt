@@ -1,3 +1,3 @@
-version: v1.12-r
+version: v1.13-r
 developper: gltdevlop
 app-release-name: IGNoteIntegration
