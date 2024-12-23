@@ -129,7 +129,7 @@ def game_monitor():
         else:
             print(t("Game list is empty or failed to load."))
 
-        time.sleep(60 if not config.get('time_update', False) else 600)
+        time.sleep(1 if not config.get('time_update', False) else 600)
 
     if last_game and start_time:
         end_time = time.perf_counter()
@@ -171,6 +171,10 @@ class SettingsWindow(QWidget):
         self.time_update_checkbox.setChecked(config.get('time_update', False))
         layout.addWidget(self.time_update_checkbox)
 
+        self.share_data_checkbox = QCheckBox(t("Share Data"))
+        self.share_data_checkbox.setChecked(config.get('share_data', False))
+        layout.addWidget(self.share_data_checkbox)
+
         language_layout = QHBoxLayout()
         language_label = QLabel(t("Language"))
         self.language_selector = QComboBox()
@@ -188,11 +192,25 @@ class SettingsWindow(QWidget):
 
     def save_settings(self):
         config['time_update'] = self.time_update_checkbox.isChecked()
+        config['share_data'] = self.share_data_checkbox.isChecked()
         config['language'] = self.language_selector.currentText().upper()
         save_config('_internal/config.txt')
         load_config('_internal/config.txt')
         messagebox.showinfo(t("Settings"), t("Settings saved successfully!"))
         self.close()
+
+def update_share_data_setting(share_data_enabled):
+    """Update the share_data setting in the config file."""
+    config_path = '_internal/config.txt'
+    with open(config_path, 'r') as file:
+        lines = file.readlines()
+
+    with open(config_path, 'w') as file:
+        for line in lines:
+            if line.startswith('share_data:'):
+                file.write(f'share_data: {str(share_data_enabled)}\n')
+            else:
+                file.write(line)
 
 def open_settings_window():
     def run_window():
@@ -211,6 +229,9 @@ def check_up():
     checkup_thread = Thread(target=check, daemon=True)
     checkup_thread.start()
 
+def web_open():
+    os.system("start \"\" http://ign.edl360.fr")
+
 def main():
     global icon
     current_version = gh_update.get_current_version()
@@ -220,6 +241,7 @@ def main():
 
     menu = Menu(
         MenuItem(t("Settings"), open_settings_window),
+        MenuItem("IGN Website", web_open),
         MenuItem(t("Refresh all"), refresh_all),
         MenuItem(f"Version : {current_version} (click to check update)", check_up),
         MenuItem(t("Quit the app"), quit_application)

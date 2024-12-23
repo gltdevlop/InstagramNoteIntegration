@@ -9,8 +9,21 @@ DB_CONFIG = {
     'database': 'game_sessions_db'
 }
 
+def should_log_data():
+    """Check if data logging is enabled based on the config file."""
+    config_path = '_internal/config.txt'
+    with open(config_path, 'r') as file:
+        for line in file:
+            if line.startswith('share_data:'):
+                return line.strip().endswith('True')
+    return False
+
 def log_game_session(game_name, user_name, start_time, end_time):
     """Log a game session to the MySQL database."""
+
+    if not should_log_data():
+        print("Data logging is disabled.")
+        return
 
     print(f"Logging session for game: {game_name}, user: {user_name}, start: {start_time}, end: {end_time}")
     duration = end_time - start_time
