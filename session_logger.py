@@ -11,6 +11,7 @@ DB_CONFIG = {
 
 def log_game_session(game_name, user_name, start_time, end_time):
     """Log a game session to the MySQL database."""
+
     print(f"Logging session for game: {game_name}, user: {user_name}, start: {start_time}, end: {end_time}")
     duration = end_time - start_time
     duration_minutes = int(duration / 60)
