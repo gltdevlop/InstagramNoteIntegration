@@ -129,7 +129,7 @@ def game_monitor():
         else:
             print(t("Game list is empty or failed to load."))
 
-        time.sleep(60 if not config.get('time_update', False) else 600)
+        time.sleep(5 if not config.get('time_update', False) else 600)
 
     if last_game and start_time:
         end_time = time.perf_counter()

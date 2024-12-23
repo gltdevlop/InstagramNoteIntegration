@@ -20,7 +20,7 @@ def send_note(note, audience):
     cl.create_note(note, audience)
 
 def del_note():
-    note = cl.create_note("note", 1)
-    cl.delete_note(int(note.id))
+    note = cl.create_note("Is not currently playing", 1)
+    # cl.delete_note(int(note.id))
 
 
