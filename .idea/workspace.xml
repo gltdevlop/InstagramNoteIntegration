@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1e1fcde6-354b-495a-961c-29eb962e9df1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/_internal/infos.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_internal/infos.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db_credentials.py" beforeDir="false" afterPath="$PROJECT_DIR$/db_credentials.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/note_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/note_node.py" afterDir="false" />
     </list>
