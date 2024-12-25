@@ -1,13 +1,9 @@
 import mysql.connector
+from db_credentials import GAME_LIST_DB_CONFIG
 
 def connect_to_database():
     try:
-        connection = mysql.connector.connect(
-            host="xxx",  # Remplacez par l'hôte de votre base de données
-            user="root",  # Remplacez par votre nom d'utilisateur MySQL
-            password="xxx",  # Remplacez par votre mot de passe MySQL
-            database="game_list"  # Remplacez par le nom de votre base de données
-        )
+        connection = mysql.connector.connect(**GAME_LIST_DB_CONFIG)
         return connection
     except mysql.connector.Error as err:
         print(f"Error: {err}")
@@ -43,6 +39,5 @@ def load_game_data():
     finally:
         cursor.close()
         connection.close()
-
 
     return games, dev_apps

@@ -1,22 +1,11 @@
 import datetime
 import mysql.connector
-
-# Configuration MySQL
-DB_CONFIG = {
-    'host': 'xxx',  # Remplacez par l'adresse de votre serveur
-    'user': 'root',       # Votre utilisateur MySQL
-    'password': 'xxx',       # Mot de passe MySQL
-    'database': 'game_sessions_db'
-}
+from config_manager import ConfigManager
+from db_credentials import DB_CONFIG
 
 def should_log_data():
     """Check if data logging is enabled based on the config file."""
-    config_path = '_internal/config.txt'
-    with open(config_path, 'r') as file:
-        for line in file:
-            if line.startswith('share_data:'):
-                return line.strip().endswith('True')
-    return False
+    return ConfigManager().get('share_data', False)
 
 def log_game_session(game_name, user_name, start_time, end_time):
     """Log a game session to the MySQL database."""

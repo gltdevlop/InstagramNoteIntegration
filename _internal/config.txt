@@ -1,3 +1,0 @@
-time_update: False
-language: EN
-share_data: True
