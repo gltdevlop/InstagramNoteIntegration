@@ -1,7 +1,9 @@
 import os
 import time
+import json
 from tkinter import messagebox
 import atexit
+import mysql.connector
 import psutil
 from threading import Thread
 from PyQt5.QtGui import QIcon
@@ -11,6 +13,7 @@ from pystray import Icon, Menu, MenuItem
 from PIL import Image
 import note_node
 import gh_update
+from db_credentials import TRANSLATION_DB
 from session_logger import log_game_session
 from load_list import load_game_data
 from config_manager import ConfigManager
@@ -19,28 +22,62 @@ last_game = None
 start_time = None
 icon = None
 config_manager = ConfigManager()
-translations = {}
+translations_cache = {}
 shutdown_flag = False
 
-def load_translations(file_path):
-    global translations
+TRANSLATION_FILE = "_internal/trad.json"
+
+def download_translations():
+    """Download all translations from the database and save them to a JSON file."""
+    global translations_cache
     try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            current_lang = None
-            for line in file:
-                line = line.strip()
-                if line.startswith("[") and line.endswith("]"):
-                    current_lang = line[1:-1].lower()
-                    translations[current_lang] = {}
-                elif ":" in line and current_lang:
-                    key, value = map(str.strip, line.split(":", 1))
-                    translations[current_lang][key] = value
+        conn = mysql.connector.connect(**TRANSLATION_DB)
+        cursor = conn.cursor()
+        cursor.execute('SELECT language, `key`, `value` FROM translations')
+        rows = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        translations = {}
+        for lang, key, value in rows:
+            if lang not in translations:
+                translations[lang] = {}
+            translations[lang][key] = value
+
+        with open(TRANSLATION_FILE, 'w', encoding='utf-8') as f:
+            json.dump(translations, f, ensure_ascii=False, indent=4)
+
+        translations_cache = translations
+        print("Translations successfully downloaded and cached.")
+
+    except Exception as e:
+        print(f"Error downloading translations: {e}")
+        if os.path.exists(TRANSLATION_FILE):
+            with open(TRANSLATION_FILE, 'r', encoding='utf-8') as f:
+                translations_cache = json.load(f)
+
+
+def load_translations_from_file():
+    """Load translations from the local JSON file."""
+    global translations_cache
+    download_translations()
+    try:
+        with open(TRANSLATION_FILE, 'r', encoding='utf-8') as f:
+            translations_cache = json.load(f)
+        print("Translations loaded from file.")
     except FileNotFoundError:
-        print(f"Error: The file '{file_path}' was not found.")
+        print("Translation file not found. Downloading translations...")
+        download_translations()
+    except Exception as e:
+        print(f"Error loading translations from file: {e}")
+
 
 def t(key):
-    lang = config_manager.get('language', 'en').lower()
-    return translations.get(lang, {}).get(key, key)
+    lang = config_manager.get('language', 'EN').upper()
+    if lang not in translations_cache:
+        print(f"Warning: Language '{lang}' not found in translations. Falling back to key.")
+        return key
+    return translations_cache.get(lang, {}).get(key, key)
 
 # On exit
 def on_exit():
@@ -68,17 +105,14 @@ def game_monitor():
             game_dict, dev_apps = load_game_data()
 
             if game_dict or dev_apps:
-                # Fusionner les jeux et les applications de développement pour la détection
                 running_game = detect_running_game({**game_dict, **dev_apps})
 
                 if running_game:
-                    # Détecter si c'est un jeu ou un IDE
                     if running_game in dev_apps.values():
                         activity = t("Coding on")
                     else:
                         activity = t("Playing")
 
-                    # Si le jeu/IDE a changé
                     if last_game != running_game:
                         if last_game and start_time:
                             end_time = time.perf_counter()
@@ -99,7 +133,6 @@ def game_monitor():
                         except Exception as e:
                             print(f"Error sending note: {e}")
 
-                    # Mise à jour du temps de jeu toutes les 10 minutes si activé
                     elif config_manager.get('time_update', False):
                         end_time = time.perf_counter()
                         run_time = end_time - start_time
@@ -149,10 +182,22 @@ def game_monitor():
         print(f"Error deleting final note: {e}")
 
 def refresh_all(icon, item):
-    load_translations('_internal/translations.txt')
+    download_translations()
+
 
 def create_image():
     return Image.open("_internal/icon.ico")
+
+def create_menu():
+    current_version = gh_update.get_current_version()
+
+    return Menu(
+        MenuItem(t("Settings"), open_settings_window),
+        MenuItem(t("IGN Website"), web_open),
+        MenuItem(t("Refresh all"), refresh_all),
+        MenuItem(f"Version : {current_version} " + t("(click to check update)"), check_up),
+        MenuItem(t("Quit the app"), quit_application)
+    )
 
 def quit_application(icon):
     note_node.del_note()
@@ -174,7 +219,7 @@ class SettingsWindow(QWidget):
         layout.addWidget(self.time_update_checkbox)
 
         self.share_data_checkbox = QCheckBox(t("Share Data"))
-        self.share_data_checkbox.setChecked(config_manager.get('share_data', False))
+        self.share_data_checkbox.setChecked(config_manager.get('share_data', True))
         layout.addWidget(self.share_data_checkbox)
 
         language_layout = QHBoxLayout()
@@ -199,7 +244,12 @@ class SettingsWindow(QWidget):
             'language': self.language_selector.currentText().upper()
         }
         config_manager.update(new_config)
-        load_translations('_internal/translations.txt')
+        download_translations()
+
+        # Refresh the icon menu to apply changes in translations
+        global icon
+        icon.menu = create_menu()
+
         messagebox.showinfo(t("Settings"), t("Settings saved successfully!"))
         self.close()
 
@@ -225,17 +275,11 @@ def web_open():
 
 def main():
     global icon
-    current_version = gh_update.get_current_version()
 
-    load_translations('_internal/translations.txt')
+    load_translations_from_file()
 
-    menu = Menu(
-        MenuItem(t("Settings"), open_settings_window),
-        MenuItem("IGN Website", web_open),
-        MenuItem(t("Refresh all"), refresh_all),
-        MenuItem(f"Version : {current_version} (click to check update)", check_up),
-        MenuItem(t("Quit the app"), quit_application)
-    )
+    # Create the initial menu
+    menu = create_menu()
 
     icon = Icon("IGNoteIntegration", create_image(), "IGNoteIntegration", menu)
 

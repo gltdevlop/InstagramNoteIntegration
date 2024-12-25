@@ -14,3 +14,10 @@ GAME_LIST_DB_CONFIG = {
     'password': passwd,  # Meme mot de passe
     'database': 'game_list'  # Base de données différente
 }
+
+TRANSLATION_DB = {
+    'host': host,  # Meme serveur
+    'user': 'root',  # Meme utilisateur
+    'password': passwd,  # Meme mot de passe
+    'database': 'translations_db'  # Base de données différente
+}
