@@ -72,6 +72,6 @@ def send_note(note, audience):
 def del_note():
     try:
         note = cl.create_note("Is not currently playing", 1)
-        # cl.delete_note(int(note.id))
+        cl.delete_note(int(note.id))
     except Exception as e:
         print(f"Error deleting note: {e}")
