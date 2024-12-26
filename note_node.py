@@ -3,8 +3,10 @@ import creds_create
 import tkinter as tk
 from tkinter import messagebox
 from instagrapi import Client
+import gh_update
 
-# Si les informations d'identification n'existent pas, les créer
+gh_update.update_application()
+
 if not os.path.exists("creds.txt"):
     creds_create.window()
 
@@ -14,6 +16,7 @@ with open("creds.txt", "r", encoding="utf-8") as f:
     password = creds[1].strip()
 
 cl = Client(request_timeout=2)
+session_file = "_internal/session.json"
 
 def otp_prompt():
     """Crée une fenêtre Tkinter pour entrer le code OTP."""
@@ -41,7 +44,6 @@ def otp_prompt():
     root.mainloop()
     return code
 
-# Surcharge de la méthode d'entrée pour gérer les demandes OTP
 original_input = cl.challenge_code_handler
 
 def custom_challenge_handler(username, choice=None):
@@ -53,9 +55,30 @@ def custom_challenge_handler(username, choice=None):
 
 cl.challenge_code_handler = custom_challenge_handler
 
-# Connexion avec gestion du challenge
+# Gestion de la session
+def load_or_create_session():
+    """Charge ou crée une session Instagram."""
+    if os.path.exists(session_file):
+        try:
+            cl.load_settings(session_file)
+            if not cl.login(username, password):
+                raise Exception("Session invalide.")
+            print("Session chargée avec succès.")
+        except Exception as e:
+            print(f"Erreur lors du chargement de la session : {e}. Nouvelle connexion nécessaire.")
+            try:
+                cl.login(username, password)
+                cl.dump_settings(session_file)
+            except Exception:
+                messagebox.showerror("Password Changed", f"Your password had been changed, you have to re enter it.")
+                creds_create.window()
+    else:
+        print("Aucune session trouvée. Connexion initiale en cours.")
+
+
+# Charger ou créer la session
 try:
-    cl.login(username, password)
+    load_or_create_session()
 except Exception as e:
     messagebox.showerror("Login Error", f"Failed to log in: {e}")
     exit(1)

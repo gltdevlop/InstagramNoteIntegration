@@ -185,6 +185,21 @@ def refresh_all(icon, item):
     download_translations()
 
 
+def is_process_already_running(process_name):
+
+    current_pid = os.getpid()
+
+    # Iterate through all running processes
+    for proc in psutil.process_iter(['pid', 'name']):
+        try:
+            if proc.info['name'].lower() == process_name.lower() and proc.pid != current_pid:
+                return True
+        except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+            continue
+
+    return False
+
+
 def create_image():
     return Image.open("_internal/icon.ico")
 
@@ -278,6 +293,12 @@ def main():
 
     load_translations_from_file()
 
+    process_name = "IGNoteIntegration.exe"
+
+    if is_process_already_running(process_name):
+        print(f"Another instance of {process_name} is already running!")
+        return
+
     # Create the initial menu
     menu = create_menu()
 
@@ -289,5 +310,4 @@ def main():
     icon.run()
 
 if __name__ == "__main__":
-    gh_update.update_application()
     main()
