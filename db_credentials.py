@@ -1,5 +1,5 @@
 host = 'xxx'
-passwd = 'xxx'
+passwd = 'x'
 
 DB_CONFIG = {
     'host': host,  # Remplacez par l'adresse de votre serveur
