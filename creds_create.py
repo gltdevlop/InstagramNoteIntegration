@@ -28,7 +28,8 @@ def save_credentials_and_login(username, password, root):
 
         add_startup()
         root.destroy()
-        subprocess.Popen("save_reboot.bat")
+
+        subprocess.Popen("save_reboot.bat", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
     except Exception as e:
         # Afficher une erreur et permettre à l'utilisateur de réessayer
         messagebox.showerror("Login Error", f"Failed to log in: {e}")

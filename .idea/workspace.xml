@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1e1fcde6-354b-495a-961c-29eb962e9df1" name="Changes" comment="" />
+    <list default="true" id="1e1fcde6-354b-495a-961c-29eb962e9df1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_internal/infos.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_internal/infos.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/creds_create.py" beforeDir="false" afterPath="$PROJECT_DIR$/creds_create.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gh_update.py" beforeDir="false" afterPath="$PROJECT_DIR$/gh_update.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

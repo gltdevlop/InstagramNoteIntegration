@@ -1,4 +1,5 @@
 import os
+import subprocess
 import time
 import json
 from tkinter import messagebox
@@ -286,7 +287,7 @@ def check_up():
     checkup_thread.start()
 
 def web_open():
-    os.system("start \"\" http://ign.edl360.fr")
+    subprocess.run("start \"\" http://ign.edl360.fr", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
 
 def main():
     global icon

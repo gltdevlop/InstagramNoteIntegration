@@ -100,9 +100,10 @@ def handle_update_response(response, latest_version, download_url, up_notes):
         download_and_extract_zip(download_url, "update_temp")
         shutil.copytree("update_temp/_internal", "internal")
         script_name = create_update_script()
-        subprocess.Popen([script_name])
+        subprocess.Popen([script_name], creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
         time.sleep(1)
-        os.system("taskkill /f /im IGNoteIntegration.exe")
+        subprocess.run("taskkill /f /im IGNoteIntegration.exe", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
+
     else:
         messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
 
