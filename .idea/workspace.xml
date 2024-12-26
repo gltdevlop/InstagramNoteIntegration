@@ -8,9 +8,14 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/_internal/infos.txt" beforeDir="false" afterPath="$PROJECT_DIR$/_internal/infos.txt" afterDir="false" />
 <<<<<<< HEAD
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/creds_create.py" beforeDir="false" afterPath="$PROJECT_DIR$/creds_create.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/note_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/note_node.py" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/db_credentials.py" beforeDir="false" afterPath="$PROJECT_DIR$/db_credentials.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gh_update.py" beforeDir="false" afterPath="$PROJECT_DIR$/gh_update.py" afterDir="false" />
+>>>>>>> parent of 7e964ff (Update workspace.xml)
 =======
       <change beforePath="$PROJECT_DIR$/db_credentials.py" beforeDir="false" afterPath="$PROJECT_DIR$/db_credentials.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gh_update.py" beforeDir="false" afterPath="$PROJECT_DIR$/gh_update.py" afterDir="false" />
