@@ -1,14 +1,16 @@
-from tkinter import messagebox
+from tkinter import messagebox, Tk, Toplevel, Label
 import requests
 import zipfile
 import os
 import shutil
 import subprocess
 import time
+import threading
 
 GITHUB_API_URL = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
 CURRENT_VERSION_FILE = "_internal/infos.txt"
 EXE_NAME = "IGNoteIntegration.exe"
+
 
 def get_current_version():
     try:
@@ -67,11 +69,42 @@ def create_update_script():
         f.write(f"del %~f0\n")
     return script_name
 
+
 def get_latest_release_notes():
     url = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
     response = requests.get(url)
     response.raise_for_status()
     return response.json().get("body", "No available release notes.")
+
+
+def show_wait_window():
+    wait_window = Toplevel()
+    wait_window.title("Veuillez patienter")
+    Label(wait_window, text="Chargement...").pack(pady=20, padx=20)
+    wait_window.geometry("200x100")
+    return wait_window
+
+
+def threaded_askyesno(title, message, callback):
+    def task():
+        response = messagebox.askyesno(title, message)
+        callback(response)
+
+    thread = threading.Thread(target=task)
+    thread.start()
+    return thread
+
+
+def handle_update_response(response, latest_version, download_url, up_notes):
+    if response:
+        download_and_extract_zip(download_url, "update_temp")
+        shutil.copytree("update_temp/_internal", "internal")
+        script_name = create_update_script()
+        subprocess.Popen([script_name])
+        time.sleep(1)
+        os.system("taskkill /f /im IGNoteIntegration.exe")
+    else:
+        messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
 
 
 def update_application():
@@ -81,17 +114,21 @@ def update_application():
     up_notes = notes.replace("#", "").replace("*", "")
 
     if current_version != latest_version:
-        update = messagebox.askyesno("Update - IGNoteIntegration", f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?")
-        if update:
-            download_and_extract_zip(download_url, "update_temp")
-            shutil.copytree("update_temp/_internal", "internal")
-            script_name = create_update_script()
-            subprocess.Popen([script_name])
-            time.sleep(1)
-            os.system("taskkill /f /im IGNoteIntegration.exe")
-        else:
-            messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
+        root = Tk()
+        root.withdraw()  # Hide the main root window
 
+        wait_window = show_wait_window()
+
+        def on_response(response):
+            wait_window.destroy()
+            handle_update_response(response, latest_version, download_url, up_notes)
+
+        threaded_askyesno(
+            "Update - IGNoteIntegration",
+            f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?",
+            on_response,
+        )
+        root.mainloop()
 
 def update_application_wanted():
     current_version = get_current_version()
@@ -100,19 +137,20 @@ def update_application_wanted():
     up_notes = notes.replace("#", "").replace("*", "")
 
     if current_version != latest_version:
-        update = messagebox.askyesno("Update - IGNoteIntegration", f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?")
-        if update:
-            download_and_extract_zip(download_url, "update_temp")
-            shutil.copytree("update_temp/_internal", "internal")
-            script_name = create_update_script()
-            subprocess.Popen([script_name])
-            time.sleep(1)
-            os.system("taskkill /f /im IGNoteIntegration.exe")
-        else:
-            messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
+        root = Tk()
+        root.withdraw()  # Hide the main root window
+
+        wait_window = show_wait_window()
+
+        def on_response(response):
+            wait_window.destroy()
+            handle_update_response(response, latest_version, download_url, up_notes)
+
+        threaded_askyesno(
+            "Update - IGNoteIntegration",
+            f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?",
+            on_response,
+        )
+        root.mainloop()
     else:
         messagebox.showinfo("No update", "No update is currently available.")
-
-
-if __name__ == "__main__":
-    update_application()
