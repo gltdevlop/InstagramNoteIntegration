@@ -8,25 +8,11 @@
 trust, but it's not a virus. Authorize the folder you'll put your app in (because when it updates it re-downloads the exe) in 
 your antivirus exclusion or disable your antivirus (not recommanded) in order to work if detected as false positive.**  
   
-Download the latest release .zip and extract it  
-Start the IGNoteIntegration.exe  
+Download the Installer.msi
+Start the Installer and install the app.
   
 **You're all set !**  
   
 To change the language of the note sent or add a time update on your note every 10 mins, right-click on the App on the systray and click "Settings". Restart the app after.  
   
 **BE CAREFUL** !! Enabling the time update can upset instagram (like really).
-  
-#### Python Version  
- 
-Download the source code,  
-Install **Python 3**,  
-Install all requirements by using (in the folder it's in)
-```
-pip install -r requirements.txt
-```  
-Start **main.py**
-  
-## You're all set !  
-The app will automatically add itself to the startup folder. If you want to disable it, go to the Task Manager, Startup 
-Apps tab and disable it. If you don't see it, reboot your PC and it'll show.
