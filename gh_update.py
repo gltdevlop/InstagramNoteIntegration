@@ -5,12 +5,10 @@ import os
 import shutil
 import subprocess
 import time
-import threading
 
 GITHUB_API_URL = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
 CURRENT_VERSION_FILE = "_internal/infos.txt"
 EXE_NAME = "IGNoteIntegration.exe"
-
 
 def get_current_version():
     try:
@@ -25,7 +23,6 @@ def get_current_version():
         print(f"Erreur lors de la lecture de la version actuelle : {e}")
     return None
 
-
 def get_latest_release():
     response = requests.get(GITHUB_API_URL)
     if response.status_code == 200:
@@ -35,7 +32,6 @@ def get_latest_release():
         return tag_name, download_url
     else:
         raise Exception(f"Cant get releases (HTTP Request error): {response.status_code}")
-
 
 def download_and_extract_zip(url, target_folder):
     zip_path = "latest_release.zip"
@@ -49,7 +45,6 @@ def download_and_extract_zip(url, target_folder):
         zip_ref.extractall(target_folder)
     os.remove(zip_path)
 
-
 def create_update_script():
     script_name = "update.bat"
     with open(script_name, "w") as f:
@@ -59,7 +54,7 @@ def create_update_script():
         f.write(f"del {EXE_NAME}\n")
         f.write(f"move update_temp\\{EXE_NAME} .\\{EXE_NAME}\n")
         f.write(f"rmdir /s /q _internal\n")
-        f.write(f"rename internal _internal\n")
+        f.write(f"rename _internal _internal\n")
         f.write(f"copy _internal\\config.json config.json\n")
         f.write(f"del _internal\\config.json\n")
         f.write(f"copy config.json _internal\\config.json\n")
@@ -69,13 +64,11 @@ def create_update_script():
         f.write(f"del %~f0\n")
     return script_name
 
-
 def get_latest_release_notes():
     url = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
     response = requests.get(url)
     response.raise_for_status()
     return response.json().get("body", "No available release notes.")
-
 
 def show_wait_window():
     wait_window = Toplevel()
@@ -84,29 +77,13 @@ def show_wait_window():
     wait_window.geometry("200x100")
     return wait_window
 
-
-def threaded_askyesno(title, message, callback):
-    def task():
-        response = messagebox.askyesno(title, message)
-        callback(response)
-
-    thread = threading.Thread(target=task)
-    thread.start()
-    return thread
-
-
-def handle_update_response(response, latest_version, download_url, up_notes):
-    if response:
-        download_and_extract_zip(download_url, "update_temp")
-        shutil.copytree("update_temp/_internal", "internal")
-        script_name = create_update_script()
-        subprocess.Popen([script_name], creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
-        time.sleep(1)
-        subprocess.run("taskkill /f /im IGNoteIntegration.exe", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
-
-    else:
-        messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
-
+def handle_update(latest_version, download_url, up_notes):
+    download_and_extract_zip(download_url, "update_temp")
+    shutil.copytree("update_temp/_internal", "_internal")
+    script_name = create_update_script()
+    subprocess.Popen([script_name], creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
+    time.sleep(1)
+    subprocess.run("taskkill /f /im IGNoteIntegration.exe", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
 
 def update_application():
     current_version = get_current_version()
@@ -120,16 +97,11 @@ def update_application():
 
         wait_window = show_wait_window()
 
-        def on_response(response):
-            wait_window.destroy()
-            handle_update_response(response, latest_version, download_url, up_notes)
+        wait_window.destroy()
+        handle_update(latest_version, download_url, up_notes)
 
-        threaded_askyesno(
-            "Update - IGNoteIntegration",
-            f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?",
-            on_response,
-        )
         root.mainloop()
+
 
 def update_application_wanted():
     current_version = get_current_version()
@@ -143,15 +115,9 @@ def update_application_wanted():
 
         wait_window = show_wait_window()
 
-        def on_response(response):
-            wait_window.destroy()
-            handle_update_response(response, latest_version, download_url, up_notes)
+        wait_window.destroy()
+        handle_update(latest_version, download_url, up_notes)
 
-        threaded_askyesno(
-            "Update - IGNoteIntegration",
-            f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?",
-            on_response,
-        )
         root.mainloop()
     else:
         messagebox.showinfo("No update", "No update is currently available.")

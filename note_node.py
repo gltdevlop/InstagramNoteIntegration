@@ -1,9 +1,12 @@
+import datetime
 import os
+import mysql.connector
 import creds_create
 import tkinter as tk
 from tkinter import messagebox
 from instagrapi import Client
 import gh_update
+from db_credentials import DB_CONFIG
 
 gh_update.update_application()
 
@@ -15,8 +18,40 @@ with open("creds.txt", "r", encoding="utf-8") as f:
     username = creds[0].strip()
     password = creds[1].strip()
 
-cl = Client(request_timeout=2)
-session_file = "_internal/session.json"
+cl = Client()
+
+try:
+    conn = mysql.connector.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+
+    # Vérifier si le user_name existe déjà dans unique_game_users
+    check_query = "SELECT id FROM unique_game_users WHERE user_name = %s"
+    cursor.execute(check_query, (username,))
+    result = cursor.fetchone()
+
+    if not result:
+        # user_name n'existe pas, ajoutons-le
+        next_id_query = "SELECT IFNULL(MAX(id), 0) + 1 FROM unique_game_users"
+        cursor.execute(next_id_query)
+        next_id = cursor.fetchone()[0]
+
+        created_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        insert_user_query = """
+                INSERT INTO unique_game_users (id, user_name, created_at)
+                VALUES (%s, %s, %s)
+            """
+        cursor.execute(insert_user_query, (next_id, username, created_at))
+        print(f"New user added: {username} with ID {next_id}")
+        conn.commit()
+
+    # Commit les changements
+    conn.commit()
+
+except mysql.connector.Error as e:
+    print(f"Error logging session to database: {e}")
+finally:
+    cursor.close()
+    conn.close()
 
 def otp_prompt():
     """Crée une fenêtre Tkinter pour entrer le code OTP."""
@@ -44,6 +79,7 @@ def otp_prompt():
     root.mainloop()
     return code
 
+# Surcharge de la méthode d'entrée pour gérer les demandes OTP
 original_input = cl.challenge_code_handler
 
 def custom_challenge_handler(username, choice=None):
@@ -55,30 +91,9 @@ def custom_challenge_handler(username, choice=None):
 
 cl.challenge_code_handler = custom_challenge_handler
 
-# Gestion de la session
-def load_or_create_session():
-    """Charge ou crée une session Instagram."""
-    if os.path.exists(session_file):
-        try:
-            cl.load_settings(session_file)
-            if not cl.login(username, password):
-                raise Exception("Session invalide.")
-            print("Session chargée avec succès.")
-        except Exception as e:
-            print(f"Erreur lors du chargement de la session : {e}. Nouvelle connexion nécessaire.")
-            try:
-                cl.login(username, password)
-                cl.dump_settings(session_file)
-            except Exception:
-                messagebox.showerror("Password Changed", f"Your password had been changed, you have to re enter it.")
-                creds_create.window()
-    else:
-        print("Aucune session trouvée. Connexion initiale en cours.")
-
-
-# Charger ou créer la session
+# Connexion avec gestion du challenge
 try:
-    load_or_create_session()
+    cl.login(username, password)
 except Exception as e:
     messagebox.showerror("Login Error", f"Failed to log in: {e}")
     exit(1)
@@ -94,7 +109,9 @@ def send_note(note, audience):
 
 def del_note():
     try:
+
         note = cl.create_note(f"{username} is not currently playing", 1)
         # cl.delete_note(int(note.id))
     except Exception as e:
         print(f"Error deleting note: {e}")
+
