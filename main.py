@@ -311,4 +311,5 @@ def main():
     icon.run()
 
 if __name__ == "__main__":
+    gh_update.update_application()
     main()

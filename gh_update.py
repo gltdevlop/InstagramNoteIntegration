@@ -1,4 +1,6 @@
-from tkinter import messagebox, Tk, Toplevel, Label
+from tkinter import messagebox
+
+import psutil
 import requests
 import zipfile
 import os
@@ -23,6 +25,7 @@ def get_current_version():
         print(f"Erreur lors de la lecture de la version actuelle : {e}")
     return None
 
+
 def get_latest_release():
     response = requests.get(GITHUB_API_URL)
     if response.status_code == 200:
@@ -33,6 +36,7 @@ def get_latest_release():
     else:
         raise Exception(f"Cant get releases (HTTP Request error): {response.status_code}")
 
+
 def download_and_extract_zip(url, target_folder):
     zip_path = "latest_release.zip"
     with requests.get(url, stream=True) as r:
@@ -41,25 +45,31 @@ def download_and_extract_zip(url, target_folder):
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
 
-    with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        zip_ref.extractall(target_folder)
+    try:
+        with zipfile.ZipFile(zip_path, "r") as zip_ref:
+            zip_ref.extractall(target_folder)
+    except zipfile.BadZipFile as e:
+        raise Exception(f"Failed to extract zip file: {e}")
+
     os.remove(zip_path)
+
 
 def create_update_script():
     script_name = "update.bat"
     with open(script_name, "w") as f:
         f.write(f"@echo off\n")
-        f.write(f"echo Mise à jour en cours...\n")
+        f.write(f"echo Updating application...\n")
         f.write(f"timeout /t 2 > nul\n")
-        f.write(f"del {EXE_NAME}\n")
+        f.write(f"taskkill /f /im {EXE_NAME} > nul 2>&1\n")  # Ensure the process is terminated
+        f.write(f"if exist {EXE_NAME} del {EXE_NAME}\n")     # Delete old executable
         f.write(f"move update_temp\\{EXE_NAME} .\\{EXE_NAME}\n")
         f.write(f"rmdir /s /q _internal\n")
-        f.write(f"rename _internal _internal\n")
+        f.write(f"rename internal _internal\n")
         f.write(f"copy _internal\\config.json config.json\n")
         f.write(f"del _internal\\config.json\n")
         f.write(f"copy config.json _internal\\config.json\n")
         f.write(f"del config.json\n")
-        f.write(f"rmdir /s /q update_temp\n")
+        f.write(f"if exist update_temp rmdir /s /q update_temp\n")  # Cleanup
         f.write(f"start {EXE_NAME}\n")
         f.write(f"del %~f0\n")
     return script_name
@@ -70,38 +80,33 @@ def get_latest_release_notes():
     response.raise_for_status()
     return response.json().get("body", "No available release notes.")
 
-def show_wait_window():
-    wait_window = Toplevel()
-    wait_window.title("Veuillez patienter")
-    Label(wait_window, text="Chargement...").pack(pady=20, padx=20)
-    wait_window.geometry("200x100")
-    return wait_window
+def terminate_process_by_name(name):
+    for process in psutil.process_iter(['pid', 'name']):
+        if process.info['name'] == name:
+            process.terminate()
+            process.wait()
 
-def handle_update(latest_version, download_url, up_notes):
-    download_and_extract_zip(download_url, "update_temp")
-    shutil.copytree("update_temp/_internal", "_internal")
-    script_name = create_update_script()
-    subprocess.Popen([script_name], creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
-    time.sleep(1)
-    subprocess.run("taskkill /f /im IGNoteIntegration.exe", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
 
 def update_application():
     current_version = get_current_version()
     latest_version, download_url = get_latest_release()
-    notes = get_latest_release_notes()
-    up_notes = notes.replace("#", "").replace("*", "")
 
     if current_version != latest_version:
-        root = Tk()
-        root.withdraw()  # Hide the main root window
-
-        wait_window = show_wait_window()
-
-        wait_window.destroy()
-        handle_update(latest_version, download_url, up_notes)
-
-        root.mainloop()
-
+        try:
+            print("Downloading update...")
+            download_and_extract_zip(download_url, "update_temp")
+            print("Extracting update...")
+            shutil.copytree("update_temp/_internal", "internal", dirs_exist_ok=True)
+            print("Creating update script...")
+            script_name = create_update_script()
+            print(f"Running update script: {script_name}")
+            subprocess.Popen([script_name], creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
+            time.sleep(1)
+            terminate_process_by_name(EXE_NAME)
+        except Exception as e:
+            print(f"Error during update: {e}")
+    else:
+        print("Application is up to date.")
 
 def update_application_wanted():
     current_version = get_current_version()
@@ -110,14 +115,22 @@ def update_application_wanted():
     up_notes = notes.replace("#", "").replace("*", "")
 
     if current_version != latest_version:
-        root = Tk()
-        root.withdraw()  # Hide the main root window
-
-        wait_window = show_wait_window()
-
-        wait_window.destroy()
-        handle_update(latest_version, download_url, up_notes)
-
-        root.mainloop()
+        update = messagebox.askyesno("Update - IGNoteIntegration", f"Version {latest_version} available (actual: {current_version}). Changes : {up_notes} Update ?")
+        if update:
+            try:
+                print("Downloading update...")
+                download_and_extract_zip(download_url, "update_temp")
+                print("Extracting update...")
+                shutil.copytree("update_temp/_internal", "internal", dirs_exist_ok=True)
+                print("Creating update script...")
+                script_name = create_update_script()
+                print(f"Running update script: {script_name}")
+                subprocess.Popen([script_name], creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
+                time.sleep(1)
+                terminate_process_by_name(EXE_NAME)
+            except Exception as e:
+                print(f"Error during update: {e}")
+        else:
+            messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
     else:
         messagebox.showinfo("No update", "No update is currently available.")
