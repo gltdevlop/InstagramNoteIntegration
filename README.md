@@ -8,7 +8,7 @@
 trust, but it's not a virus. Authorize the folder you'll put your app in (because when it updates it re-downloads the exe) in 
 your antivirus exclusion or disable your antivirus (not recommanded) in order to work if detected as false positive.**  
   
-Download the Installer.msi oh https://edl360.fr
+Download the Installer.msi on https://edl360.fr  
 Start the Installer and install the app.
   
 **You're all set !**  
