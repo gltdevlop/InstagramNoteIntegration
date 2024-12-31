@@ -11,7 +11,7 @@ client = Client()
 def validate_credentials(username, password):
     client.challenge_code_handler = note_node.custom_challenge_handler  # Attach custom handler
     try:
-        client.login(username, password)  # Attempt to log in
+        client.login(username, password)
         return True
     except Exception as e:
         messagebox.showerror("Error", f"Login failed: {e}")
