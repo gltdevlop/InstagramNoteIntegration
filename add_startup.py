@@ -1,9 +1,12 @@
 import os
 import winshell
+import variables_node as vn
 from win32com.client import Dispatch
 
+exe = vn.exe
+
 def add_startup():
-    if os.path.exists("IGNoteIntegration.exe"):
+    if os.path.exists(exe):
         exe_path = os.getcwd() + "\\IGNoteIntegration.exe"
         shortcut_name = "IGNoteIntegration.lnk"
         startup_folder = winshell.startup()

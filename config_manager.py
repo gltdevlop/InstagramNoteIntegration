@@ -1,15 +1,12 @@
 import json
 import os
+import variables_node as vn
 from tkinter import messagebox
 from typing import Any, Dict
 
 class ConfigManager:
     _instance = None
-    DEFAULT_CONFIG = {
-        "language": "en",
-        "time_update": False,
-        "share_data": True
-    }
+    DEFAULT_CONFIG = vn.def_cfg
 
     def __new__(cls):
         if cls._instance is None:

@@ -7,10 +7,11 @@ import os
 import shutil
 import subprocess
 import time
+import variables_node as vn
 
-GITHUB_API_URL = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
-CURRENT_VERSION_FILE = "_internal/infos.txt"
-EXE_NAME = "IGNoteIntegration.exe"
+GITHUB_API_URL = vn.github_api_url
+CURRENT_VERSION_FILE = vn.infos_file
+EXE_NAME = vn.exe
 
 def get_current_version():
     try:
@@ -38,25 +39,25 @@ def get_latest_release():
 
 
 def download_and_extract_zip(url, target_folder):
-    zip_path = "latest_release.zip"
+    latest_rl_zip_path = vn.latest_rl_zip_path
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
-        with open(zip_path, "wb") as f:
+        with open(latest_rl_zip_path, "wb") as f:
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
 
     try:
-        with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        with zipfile.ZipFile(latest_rl_zip_path, "r") as zip_ref:
             zip_ref.extractall(target_folder)
     except zipfile.BadZipFile as e:
         messagebox.showerror("Error", f"Failed to extract zip: {e}")
 
-    os.remove(zip_path)
+    os.remove(latest_rl_zip_path)
 
 
 def create_update_script():
-    script_name = "update.bat"
-    with open(script_name, "w") as f:
+    update_script_name = vn.update_script_name
+    with open(update_script_name, "w") as f:
         f.write(f"@echo off\n")
         f.write(f"echo Updating application...\n")
         f.write(f"timeout /t 2 > nul\n")
@@ -72,11 +73,11 @@ def create_update_script():
         f.write(f"if exist update_temp rmdir /s /q update_temp\n")  # Cleanup
         f.write(f"start {EXE_NAME}\n")
         f.write(f"del %~f0\n")
-    return script_name
+    return update_script_name
 
 def get_latest_release_notes():
-    url = "https://api.github.com/repos/gltdevlop/InstagramNoteIntegration/releases/latest"
-    response = requests.get(url)
+    rl_url = vn.rl_url
+    response = requests.get(rl_url)
     response.raise_for_status()
     return response.json().get("body", "No available release notes.")
 

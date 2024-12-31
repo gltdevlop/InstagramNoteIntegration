@@ -19,20 +19,23 @@ from db_credentials import TRANSLATION_DB
 from session_logger import log_game_session
 from load_list import load_game_data
 from config_manager import ConfigManager
+import variables_node as vn
 
-last_game = None
-start_time = None
-icon = None
+last_game = vn.last_game
+start_time = vn.start_time
+icon = vn.icon
 config_manager = ConfigManager()
-translations_cache = {}
-shutdown_flag = False
-translation_file = "_internal/trad.json"
+translations_cache = vn.translations_cache
+shutdown_flag = vn.shutdown_flag
+translation_file = vn.translation_file
+creds_file = vn.creds
+app_name = vn.app_name
+website = vn.website
 
-if os.path.exists("creds.txt"):
-    with open("creds.txt", "r", encoding="utf-8") as f:
+if os.path.exists(creds_file):
+    with open(creds_file, "r", encoding="utf-8") as f:
         creds = f.readlines()
         username = creds[0].strip()
-
 
 def download_translations():
     """Download all translations from the database and save them to a JSON file."""
@@ -70,7 +73,6 @@ def download_translations():
 
 
 def load_translations_from_file():
-    """Load translations from the local JSON file."""
     global translations_cache
     download_translations()
     try:
@@ -184,7 +186,7 @@ def game_monitor():
     if last_game and start_time:
         end_time = time.perf_counter()
         try:
-            log_game_session(last_game, note_node.uname, start_time, end_time)
+            log_game_session(last_game, username, start_time, end_time)
         except Exception as e:
             print(f"Error logging final session: {e}")
     try:
@@ -231,7 +233,7 @@ def quit_application(icon):
 class SettingsWindow(QWidget):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle(t("Settings - IGNoteIntegration"))
+        self.setWindowTitle(t(f"Settings - IGNoteIntegration"))
         self.setFixedSize(330, 150)
         self.init_ui()
 
@@ -294,12 +296,11 @@ def check_up():
     checkup_thread.start()
 
 def web_open():
-    subprocess.run("start \"\" http://ign.edl360.fr", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
+    subprocess.run(f"start \"\" {website}", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
 
 def detect_process():
-    process_name = "IGNoteIntegration.exe"
+    process_name = vn.exe
     if is_process_already_running(process_name):
-        print(f"Another instance of {process_name} is already running!")
         sys.exit(0)
 
 def main():
@@ -310,7 +311,7 @@ def main():
     # Create the initial menu
     menu = create_menu()
 
-    icon = Icon("IGNoteIntegration", create_image(), "IGNoteIntegration", menu)
+    icon = Icon(app_name, create_image(), app_name, menu)
 
     monitor_thread = Thread(target=game_monitor, daemon=True)
     monitor_thread.start()
@@ -318,10 +319,11 @@ def main():
     icon.run()
 
 if __name__ == "__main__":
+    print(f"\nWelcome to IGN, version {gh_update.get_current_version()}\n")
 
     atexit.register(on_exit)
+
     gh_update.update_application()
     detect_process()
     note_node.main()
-
     main()

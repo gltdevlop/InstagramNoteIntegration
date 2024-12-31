@@ -5,12 +5,14 @@ import time
 import mysql.connector
 import creds_create
 import tkinter as tk
+import variables_node as vn
 
 from tkinter import messagebox
 from instagrapi import Client
 from db_credentials import DB_CONFIG
 
-SESSION_FILE = "instagram_session.json"
+SESSION_FILE = vn.session_file
+creds_file = vn.creds
 
 def save_session(client):
     client.dump_settings(SESSION_FILE)
@@ -80,10 +82,10 @@ cl = Client()
 cl.challenge_code_handler = custom_challenge_handler
 
 def main():
-    if not os.path.exists("creds.txt"):
+    if not os.path.exists(creds_file):
         creds_create.window()
 
-    with open("creds.txt", "r", encoding="utf-8") as f:
+    with open(creds_file, "r", encoding="utf-8") as f:
         creds = f.readlines()
         username = creds[0].strip()
         password = creds[1].strip()
@@ -152,8 +154,8 @@ def send_note(note, audience):
 
 def del_note():
 
-    if os.path.exists("creds.txt"):
-        with open("creds.txt", "r", encoding="utf-8") as f:
+    if os.path.exists(creds_file):
+        with open(creds_file, "r", encoding="utf-8") as f:
             creds = f.readlines()
             uname = creds[0].strip()
     else:

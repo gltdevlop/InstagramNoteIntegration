@@ -2,11 +2,13 @@ from tkinter import messagebox
 from instagrapi import Client
 from add_startup import add_startup
 
+import variables_node as vn
 import subprocess
 import tkinter as tk
 import note_node
 
 client = Client()
+creds_file = vn.creds
 
 def validate_credentials(username, password):
     client.challenge_code_handler = note_node.custom_challenge_handler  # Attach custom handler
@@ -31,7 +33,7 @@ def window():
 
         try:
             # Save credentials locally
-            with open("creds.txt", "w") as f:
+            with open(creds_file, "w") as f:
                 f.write(f"{username}\n")
                 f.write(f"{password}\n")
                 f.flush()
