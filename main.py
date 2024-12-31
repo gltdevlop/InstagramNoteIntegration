@@ -1,5 +1,6 @@
 import os
 import subprocess
+import sys
 import time
 import json
 from tkinter import messagebox
@@ -25,14 +26,24 @@ icon = None
 config_manager = ConfigManager()
 translations_cache = {}
 shutdown_flag = False
+translation_file = "_internal/trad.json"
 
-TRANSLATION_FILE = "_internal/trad.json"
+if os.path.exists("creds.txt"):
+    with open("creds.txt", "r", encoding="utf-8") as f:
+        creds = f.readlines()
+        username = creds[0].strip()
+
 
 def download_translations():
     """Download all translations from the database and save them to a JSON file."""
     global translations_cache
     try:
         conn = mysql.connector.connect(**TRANSLATION_DB)
+    except mysql.connector.Error as e:
+        messagebox.showerror("Connexion Error", f"Unable to connect to database. Error: {e}")
+        sys.exit(1)
+
+    try:
         cursor = conn.cursor()
         cursor.execute('SELECT language, `key`, `value` FROM translations')
         rows = cursor.fetchall()
@@ -45,7 +56,7 @@ def download_translations():
                 translations[lang] = {}
             translations[lang][key] = value
 
-        with open(TRANSLATION_FILE, 'w', encoding='utf-8') as f:
+        with open(translation_file, 'w', encoding='utf-8') as f:
             json.dump(translations, f, ensure_ascii=False, indent=4)
 
         translations_cache = translations
@@ -53,8 +64,8 @@ def download_translations():
 
     except Exception as e:
         print(f"Error downloading translations: {e}")
-        if os.path.exists(TRANSLATION_FILE):
-            with open(TRANSLATION_FILE, 'r', encoding='utf-8') as f:
+        if os.path.exists(translation_file):
+            with open(translation_file, 'r', encoding='utf-8') as f:
                 translations_cache = json.load(f)
 
 
@@ -63,7 +74,7 @@ def load_translations_from_file():
     global translations_cache
     download_translations()
     try:
-        with open(TRANSLATION_FILE, 'r', encoding='utf-8') as f:
+        with open(translation_file, 'r', encoding='utf-8') as f:
             translations_cache = json.load(f)
         print("Translations loaded from file.")
     except FileNotFoundError:
@@ -80,13 +91,10 @@ def t(key):
         return key
     return translations_cache.get(lang, {}).get(key, key)
 
-# On exit
 def on_exit():
     global shutdown_flag
     shutdown_flag = True
     note_node.del_note()
-
-atexit.register(on_exit)
 
 def detect_running_game(game_dict):
     for process in psutil.process_iter(attrs=['name']):
@@ -118,7 +126,7 @@ def game_monitor():
                         if last_game and start_time:
                             end_time = time.perf_counter()
                             try:
-                                log_game_session(last_game, note_node.username, start_time, end_time)
+                                log_game_session(last_game, username, start_time, end_time)
                             except Exception as e:
                                 print(f"Error logging game session: {e}")
 
@@ -131,6 +139,8 @@ def game_monitor():
                         try:
                             note_node.send_note(note_content, 0)
                             last_game = running_game
+                            icon.menu = create_menu()
+
                         except Exception as e:
                             print(f"Error sending note: {e}")
 
@@ -149,7 +159,7 @@ def game_monitor():
                     if last_game and start_time:
                         end_time = time.perf_counter()
                         try:
-                            log_game_session(last_game, note_node.username, start_time, end_time)
+                            log_game_session(last_game, username, start_time, end_time)
                         except Exception as e:
                             print(f"Error logging final game session: {e}")
 
@@ -174,16 +184,13 @@ def game_monitor():
     if last_game and start_time:
         end_time = time.perf_counter()
         try:
-            log_game_session(last_game, note_node.username, start_time, end_time)
+            log_game_session(last_game, note_node.uname, start_time, end_time)
         except Exception as e:
             print(f"Error logging final session: {e}")
     try:
         note_node.del_note()
     except Exception as e:
         print(f"Error deleting final note: {e}")
-
-def refresh_all(icon, item):
-    download_translations()
 
 
 def is_process_already_running(process_name):
@@ -200,18 +207,20 @@ def is_process_already_running(process_name):
 
     return False
 
-
 def create_image():
     return Image.open("_internal/icon.ico")
 
 def create_menu():
     current_version = gh_update.get_current_version()
+    current_game_display = last_game if last_game else t("XXX")
 
     return Menu(
+        MenuItem(f"{t('Current Game/IDE')}: {current_game_display}", lambda: None),
+        MenuItem(t("Access the IGN Website"), web_open),
+        Menu.SEPARATOR,
         MenuItem(t("Settings"), open_settings_window),
-        MenuItem(t("IGN Website"), web_open),
-        MenuItem(t("Refresh all"), refresh_all),
-        MenuItem(f"Version : {current_version} " + t("(click to check update)"), check_up),
+        MenuItem(t("Check updates") + t(" (actual version: ") + f"{current_version})", check_up),
+        Menu.SEPARATOR,
         MenuItem(t("Quit the app"), quit_application)
     )
 
@@ -262,8 +271,6 @@ class SettingsWindow(QWidget):
         config_manager.update(new_config)
         download_translations()
 
-        # Refresh the icon menu to apply changes in translations
-        global icon
         icon.menu = create_menu()
 
         messagebox.showinfo(t("Settings"), t("Settings saved successfully!"))
@@ -289,16 +296,16 @@ def check_up():
 def web_open():
     subprocess.run("start \"\" http://ign.edl360.fr", creationflags=subprocess.CREATE_NO_WINDOW, shell=True)
 
+def detect_process():
+    process_name = "IGNoteIntegration.exe"
+    if is_process_already_running(process_name):
+        print(f"Another instance of {process_name} is already running!")
+        sys.exit(0)
+
 def main():
     global icon
 
     load_translations_from_file()
-
-    process_name = "IGNoteIntegration.exe"
-
-    if is_process_already_running(process_name):
-        print(f"Another instance of {process_name} is already running!")
-        return
 
     # Create the initial menu
     menu = create_menu()
@@ -311,5 +318,10 @@ def main():
     icon.run()
 
 if __name__ == "__main__":
+
+    atexit.register(on_exit)
     gh_update.update_application()
+    detect_process()
+    note_node.main()
+
     main()

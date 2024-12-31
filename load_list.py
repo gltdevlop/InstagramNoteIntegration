@@ -1,3 +1,6 @@
+import sys
+from tkinter import messagebox
+
 import mysql.connector
 from db_credentials import GAME_LIST_DB_CONFIG
 
@@ -5,9 +8,9 @@ def connect_to_database():
     try:
         connection = mysql.connector.connect(**GAME_LIST_DB_CONFIG)
         return connection
-    except mysql.connector.Error as err:
-        print(f"Error: {err}")
-        return None
+    except mysql.connector.Error as e:
+        messagebox.showerror("Connexion Error", f"Unable to connect to database. Error: {e}")
+        sys.exit(1)
 
 def load_game_data():
     games = {}

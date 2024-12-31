@@ -15,7 +15,7 @@ EXE_NAME = "IGNoteIntegration.exe"
 def get_current_version():
     try:
         if not os.path.exists(CURRENT_VERSION_FILE):
-            raise FileNotFoundError(f"Le fichier {CURRENT_VERSION_FILE} est introuvable.")
+            messagebox.showerror("Error", f"Couldn't file the {CURRENT_VERSION_FILE} file.")
 
         with open(CURRENT_VERSION_FILE, "r") as f:
             for line in f:
@@ -34,7 +34,7 @@ def get_latest_release():
         download_url = data["assets"][0]["browser_download_url"]
         return tag_name, download_url
     else:
-        raise Exception(f"Cant get releases (HTTP Request error): {response.status_code}")
+        messagebox.showerror("Error", f"Couldn't get releases : {response.status_code}")
 
 
 def download_and_extract_zip(url, target_folder):
@@ -49,7 +49,7 @@ def download_and_extract_zip(url, target_folder):
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(target_folder)
     except zipfile.BadZipFile as e:
-        raise Exception(f"Failed to extract zip file: {e}")
+        messagebox.showerror("Error", f"Failed to extract zip: {e}")
 
     os.remove(zip_path)
 
@@ -104,7 +104,7 @@ def update_application():
             time.sleep(1)
             terminate_process_by_name(EXE_NAME)
         except Exception as e:
-            print(f"Error during update: {e}")
+            messagebox.showerror("Error", f"Error during update: {e}")
     else:
         print("Application is up to date.")
 
@@ -129,7 +129,7 @@ def update_application_wanted():
                 time.sleep(1)
                 terminate_process_by_name(EXE_NAME)
             except Exception as e:
-                print(f"Error during update: {e}")
+                messagebox.showerror("Error", f"Error during update: {e}")
         else:
             messagebox.showinfo("Declined", "You declined the update. It'll re-ask you at next app-startup.")
     else:

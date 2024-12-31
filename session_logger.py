@@ -1,4 +1,7 @@
 import datetime
+import sys
+from tkinter import messagebox
+
 import mysql.connector
 from config_manager import ConfigManager
 from db_credentials import DB_CONFIG
@@ -33,7 +36,7 @@ def log_game_session(game_name, user_name, start_time, end_time):
         conn.close()
         print(f"Logged session: {game_name} ({duration_minutes} minutes)")
     except mysql.connector.Error as e:
-        print(f"Error logging session to database: {e}")
+        messagebox.showerror("Error", f"Error logging session to database: {e}")
 
 def calculate_total_playtime():
     """Calculate total playtime from the MySQL database."""
@@ -42,6 +45,11 @@ def calculate_total_playtime():
 
     try:
         conn = mysql.connector.connect(**DB_CONFIG)
+    except mysql.connector.Error as e:
+        messagebox.showerror("Connexion Error", f"Unable to connect to database. Error: {e}")
+        sys.exit(1)
+
+    try:
         cursor = conn.cursor()
         query = """
             SELECT game_name, SUM(duration_minutes)
@@ -56,6 +64,6 @@ def calculate_total_playtime():
         cursor.close()
         conn.close()
     except mysql.connector.Error as e:
-        print(f"Error reading from database: {e}")
+        messagebox.showerror("Error", f"Error reading from database: {e}")
 
     return total_time, game_times

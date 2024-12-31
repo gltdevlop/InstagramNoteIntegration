@@ -1,5 +1,6 @@
 import json
 import os
+from tkinter import messagebox
 from typing import Any, Dict
 
 class ConfigManager:
@@ -38,7 +39,7 @@ class ConfigManager:
             with open(self._config_file, 'w', encoding='utf-8') as f:
                 json.dump(self._config, f, indent=4)
         except Exception as e:
-            print(f"Error saving config: {e}")
+            messagebox.showerror("Error", f"Error saving config:  {e}")
 
     def get(self, key: str, default: Any = None) -> Any:
         """Get a configuration value."""
