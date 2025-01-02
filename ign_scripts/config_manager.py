@@ -12,7 +12,7 @@ class ConfigManager:
         if cls._instance is None:
             cls._instance = super(ConfigManager, cls).__new__(cls)
             cls._instance._config = {}
-            cls._instance._config_file = os.path.join("_internal", "config.json")
+            cls._instance._config_file = os.path.join("../_internal", "config.json")
             cls._instance._load_config()
         return cls._instance
 
